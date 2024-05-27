@@ -1,2 +1,3 @@
-# visual-panorama-maker
-Visual Panorama Maker based on Pannellum
+# Visual Panorama Maker based on Pannellum
+
+_Work in progress_
