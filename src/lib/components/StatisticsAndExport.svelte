@@ -1,14 +1,23 @@
 <script>
+	// @ts-nocheck
 	import * as Tabs from '$lib/components/ui/tabs/index';
 	import * as Card from '$lib/components/ui/card/index';
 	import { Button } from '$lib/components/ui/button/index';
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label/index';
 	import { Skeleton } from '$lib/components/ui/skeleton/index';
-
+	import { hotspotInfo } from './storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
-
+	import { onMount } from 'svelte';
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
+
+	let info = [];
+	onMount(() => {
+		hotspotInfo.subscribe((value) => {
+			console.log(value);
+			info = value;
+		});
+	});
 </script>
 
 <Tabs.Root value="statistics" class="h-full w-full">
@@ -22,7 +31,17 @@
 				<Card.Title>Statistics</Card.Title>
 				<Card.Description>Description</Card.Description>
 			</Card.Header>
-			<Card.Content class="space-y-2">Things like current coordinate, amount of hotspots, image size etc.</Card.Content>
+			<Card.Content class="space-y-2"
+				><div class="hotspots w-full">
+					{#each info as item, index}
+						<div class="w-full bg-blue-500">
+							<p>Hotspot {index + 1} Yaw: {item.yaw}, Pitch: {item.pitch}</p>
+							<img class="w-12" src={item.hotspots} alt="">
+						</div>
+					{/each}
+				</div></Card.Content
+			>
+			
 		</Card.Root>
 	</Tabs.Content>
 	<Tabs.Content value="export">

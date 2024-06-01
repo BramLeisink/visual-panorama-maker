@@ -1,4 +1,5 @@
 <script lang="ts">
+	//@ts-nocheck
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -9,10 +10,33 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 
+	import { hotspotInfo } from './storedInfo';//imports the yaw pitch writable
+	import { writable } from 'svelte/store';
+	const hotspots = ['https://thirdspacelearning.com/wp-content/uploads/2023/05/Irregular-Polygons-image-1-US.png'
+
+	];
+	
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
+	let visibleStates: boolean[]= Array(12).fill(true); // Initialize visibility state for 12 items
+	
+	function openInput(i: number) {
+		visibleStates = visibleStates.map((state, index) => index === i ? false : state);
+	}
+
+	function handleSubmit(index: number, event: Event): void{
+		// function for handling the pitch and yaw values given
+		event.preventDefault();
+		const form = event.target as HTMLFormElement;
+		const yaw = (form.querySelector('#yaw' ) as HTMLInputElement).value; //yaw
+		const pitch = (form.querySelector('#pitch') as HTMLInputElement).value; //pitch
+		console.log(`Yaw: ${yaw} Pitch: ${pitch}`);
+		hotspotInfo.update(values => [...values, { yaw, pitch, "type": "info", "text": "test"}]);
+		
+		visibleStates[index] = true;
+	}
 </script>
 
-<div class="h-full overflow-y-auto max-h-screen">
+<div class="h-full max-h-screen overflow-y-auto">
 	<Tabs.Root value="hotspots" class="w-full">
 		<Tabs.List class="grid w-full grid-cols-2">
 			<Tabs.Trigger value="hotspots">Hotspots</Tabs.Trigger>
@@ -29,8 +53,23 @@
 				</Card.Header>
 				<Card.Content class="space-y-2">
 					<div class="flex flex-wrap items-center justify-center gap-2">
-						{#each { length: 12 } as _, i}
-							<Skeleton class="h-24 w-24 rounded" />
+						{#each hotspots as hotspot, i}
+							{#if visibleStates[i]}
+								<button class="h-24 w-24 cursor-pointer rounded" on:click={() => openInput(i)}
+									><img
+										src={hotspot} 
+										class="h-full w-full"
+										alt=""
+									/></button
+								>
+							{:else}
+							<form on:submit={(event) => handleSubmit(i, event)}>
+								<input type="text" class="border" name="pitch" id="pitch" placeholder="pitch" >
+								<input type="text" class="border" name="yaw" id="yaw" placeholder="yaw">
+								<input type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value="submit">
+							</form>
+								
+							{/if}
 						{/each}
 					</div>
 				</Card.Content>
