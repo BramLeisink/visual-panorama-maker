@@ -10,8 +10,14 @@
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
-
+	
 	let info = [];
+
+	function removeHotspot(index){
+		hotspotInfo.update(currentHotspots => {
+			return currentHotspots.filter((item, i) => i !== index);
+		})
+	}
 	onMount(() => {
 		hotspotInfo.subscribe((value) => {
 			console.log(value);
@@ -19,7 +25,10 @@
 		});
 	});
 </script>
-
+<svelte:head>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</svelte:head>
 <Tabs.Root value="statistics" class="h-full w-full">
 	<Tabs.List class="grid w-full grid-cols-2">
 		<Tabs.Trigger value="statistics">Statistics</Tabs.Trigger>
@@ -36,7 +45,7 @@
 					{#each info as item, index}
 						<div class="w-full bg-blue-500">
 							<p>Hotspot {index + 1} Yaw: {item.yaw}, Pitch: {item.pitch}</p>
-							<img class="w-12" src={item.hotspots} alt="">
+							<button on:click={() => removeHotspot(index)} class="material-icons">delete</button>
 						</div>
 					{/each}
 				</div></Card.Content
