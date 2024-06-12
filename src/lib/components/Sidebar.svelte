@@ -10,46 +10,54 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 
-	import { hotspotInfo } from './storedInfo';//imports the yaw pitch writable
+	import { hotspotInfo } from './storedInfo'; //imports the yaw pitch writable
 	import { writable } from 'svelte/store';
-	const hotspots = [{'icon': 'info', 'type': 'info hotspot'},
-	{'icon': 'arrow_circle_up', 'type': 'scene hotspot'}
-	];
-	
+	const hotspots = [
+		{ icon: 'info', type: 'info hotspot' },
+		{ icon: 'arrow_circle_up', type: 'scene hotspot' }
+	]; //these are the hotspot types we have 2 an info and a scene hotspots we define the type
+	//and the icon that is shown in the sidebar
 
-	
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
-	let visibleStates: boolean[]= Array(12).fill(true); // Initialize visibility state for 12 items
-	
+	let visible: boolean[] = Array(2).fill(true); // if visible icon shows else input fields show.
+	let scene = []; //define the scene array
+	let imgSrc;
 	function openInput(i: number) {
-		visibleStates = visibleStates.map((state, index) => index === i ? false : state);
+		visible = visible.map((state, index) => (index === i ? false : state));
 	}
 
-	function handleSubmit(index: number, event: Event): void{
+	function handleSubmit(index: number, event: Event): void {
 		// function for handling the pitch and yaw values given
-		console.log('works')
+		console.log('works');
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
-		const yaw = (form.querySelector('#yaw' ) as HTMLInputElement).value; //yaw
+		const yaw = (form.querySelector('#yaw') as HTMLInputElement).value; //yaw
 		const pitch = (form.querySelector('#pitch') as HTMLInputElement).value; //pitch
 		const text = (form.querySelector('#text') as HTMLInputElement).value; // the text to display on hover of the hotspot
 		const type = hotspots[index].type;
 		console.log(`Yaw: ${yaw} Pitch: ${pitch}`);
-		if(type == "info hotspot"){
-			const url = (form.querySelector("#url") as HTMLInputElement).value;
-			hotspotInfo.update(values => [...values, { yaw, pitch, "type": type, "text": text, "URL": url}]);
+		if (type == 'info hotspot') {
+			const url = (form.querySelector('#url') as HTMLInputElement).value;
+			hotspotInfo.update((values) => [...values, { yaw, pitch, type: type, text: text, URL: url }]);
+		} else {
+			hotspotInfo.update((values) => [...values, { yaw, pitch, type: type, text: text }]);
 		}
-		else {
-			hotspotInfo.update(values => [...values, { yaw, pitch, "type": type, "text": text}]);
+
+		visible[index] = true;
+	}
+
+	function addScene(event) {
+		const files = event.target.files;
+		for (let i = 0; i < files.length; i++) {
+			const imgSrc = URL.createObjectURL(files[i]);
+			scene = [...scene, imgSrc];
 		}
-		
-		
-		visibleStates[index] = true;
+		console.log(scene);
 	}
 </script>
+
 <svelte:head>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </svelte:head>
 
 <div class="h-full max-h-screen overflow-y-auto">
@@ -70,29 +78,53 @@
 				<Card.Content class="space-y-2">
 					<div class="flex flex-wrap items-center justify-center gap-2">
 						{#each hotspots as hotspot, i}
-							{#if visibleStates[i]}
-								<button class="h-24 w-32 cursor-pointer rounded mt-12" on:click={() => openInput(i)}>
+							{#if visible[i]}
+								<button
+									class="mt-12 h-24 w-32 cursor-pointer rounded"
+									on:click={() => openInput(i)}
+								>
 									<label for="">{hotspot.type}</label>
 									<span class="material-icons md-60">{hotspot.icon}</span></button
 								>
 							{:else}
-							<form on:submit={(event) => handleSubmit(i, event)}>
-								
-								<input type="text" class="border" name="pitch" id="pitch" placeholder="pitch" required>
-								<input type="text" class="border" name="yaw" id="yaw" placeholder="yaw" required>
-								<input type="text" name="text" id="text" placeholder="Text to display on hover">
-								{#if hotspot.type == "info hotspot"}
-									<input type="url" name="url" id="url" placeholder="url">
+								<form on:submit={(event) => handleSubmit(i, event)}>
+									<input
+										type="text"
+										class="border"
+										name="yaw"
+										id="yaw"
+										placeholder="yaw"
+										required
+									/>
+									<input
+										type="text"
+										class="border"
+										name="pitch"
+										id="pitch"
+										placeholder="pitch"
+										required
+									/>
+									<input type="text" name="text" id="text" placeholder="Text to display on hover" />
+									{#if hotspot.type == 'info hotspot'}
+										<input type="url" name="url" id="url" placeholder="url" />
+									{:else if hotspot.type == 'scene hotspot'}
+										<input type="file" name="scene" id="scene" on:change={addScene} hidden /><br />
+										<div class="sceneDiv w-max rounded bg-red-800">
+											<label for="scene" class=" cursor-pointer">Upload scene</label>
+										</div>
+										<br />
+									{/if}
 
-									{:else if hotspot.type == "scene hotspot"}
-										 <input type="file" name="scene" id="scene">
-								{/if}
-								
-								<input type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value="submit">
-							</form>
-								
+									<input
+										type="submit"
+										class="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+										value="submit"
+									/>
+								</form>
 							{/if}
 						{/each}
+
+						
 					</div>
 				</Card.Content>
 			</Card.Root>
@@ -128,5 +160,7 @@
 </div>
 
 <style>
-	.material-icons.md-60 { font-size: 60px; }
+	.material-icons.md-60 {
+		font-size: 60px;
+	}
 </style>

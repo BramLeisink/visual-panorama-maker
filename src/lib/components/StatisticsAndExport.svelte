@@ -9,14 +9,15 @@
 	import { hotspotInfo } from './storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
+	export let data;
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
-	
+
 	let info = [];
 
-	function removeHotspot(index){
-		hotspotInfo.update(currentHotspots => {
+	function removeHotspot(index) {
+		hotspotInfo.update((currentHotspots) => {
 			return currentHotspots.filter((item, i) => i !== index);
-		})
+		});
 	}
 	onMount(() => {
 		hotspotInfo.subscribe((value) => {
@@ -25,9 +26,9 @@
 		});
 	});
 </script>
+
 <svelte:head>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </svelte:head>
 <Tabs.Root value="statistics" class="h-full w-full">
 	<Tabs.List class="grid w-full grid-cols-2">
@@ -38,10 +39,11 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Statistics</Card.Title>
-				<Card.Description>Description</Card.Description>
+				<Card.Description><p>Current yaw: {data.yaw}, Current pitch: {data.pitch}</p></Card.Description>
 			</Card.Header>
 			<Card.Content class="space-y-2"
 				><div class="hotspots w-full">
+					
 					{#each info as item, index}
 						<div class="w-full bg-blue-500">
 							<p>Hotspot {index + 1} Yaw: {item.yaw}, Pitch: {item.pitch}</p>
@@ -50,7 +52,6 @@
 					{/each}
 				</div></Card.Content
 			>
-			
 		</Card.Root>
 	</Tabs.Content>
 	<Tabs.Content value="export">
