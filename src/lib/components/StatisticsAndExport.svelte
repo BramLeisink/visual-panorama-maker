@@ -9,11 +9,12 @@
 	import { hotspotInfo } from './storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
+	import { copyText } from 'svelte-copy';
 	export let data;
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 
 	let info = [];
-
+	let infoText;
 	function removeHotspot(index) {
 		hotspotInfo.update((currentHotspots) => {
 			return currentHotspots.filter((item, i) => i !== index);
@@ -23,6 +24,10 @@
 		hotspotInfo.subscribe((value) => {
 			console.log(value);
 			info = value;
+			infoText =
+				'{"type": "equirectangular", "panorama": "YOUR IMAGE HERE", "hotspots": ' +
+				JSON.stringify(info, null, "\t") +
+				'}';
 		});
 	});
 </script>
@@ -39,11 +44,12 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Statistics</Card.Title>
-				<Card.Description><p>Current yaw: {data.yaw}, Current pitch: {data.pitch}</p></Card.Description>
+				<Card.Description
+					><p>Current yaw: {data.yaw}, Current pitch: {data.pitch}</p></Card.Description
+				>
 			</Card.Header>
 			<Card.Content class="space-y-2"
 				><div class="hotspots w-full">
-					
 					{#each info as item, index}
 						<div class="w-full bg-blue-500">
 							<p>Hotspot {index + 1} Yaw: {item.yaw}, Pitch: {item.pitch}</p>
@@ -61,12 +67,13 @@
 				<Card.Description>Description</Card.Description>
 			</Card.Header>
 			<Card.Content class="space-y-2">
-				<Textarea placeholder="The final code goes here" /></Card.Content
-			>
+				<Textarea placeholder="The final code goes here" bind:value={infoText} />
+			</Card.Content>
 			<Card.Footer>
 				<div class="flex flex-wrap gap-2">
 					<Button>Download</Button>
-					<Button variant="secondary">Copy</Button>
+					<Button variant="secondary" on:click={() => {copyText(infoText)}} on:svelte-copy={(event) => alert(event.detail)}>Copy</Button>
+					
 				</div>
 			</Card.Footer>
 		</Card.Root>

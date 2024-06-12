@@ -14,9 +14,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	function updateYawPitch(data) {
-		dispatch('update', data);
-	}
+	
 	onMount(() => {
 		// Subscribe to the selectedFile store
 		const subscribeFile = selectedFile.subscribe((imageData) => {
