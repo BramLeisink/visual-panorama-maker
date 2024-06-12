@@ -1,12 +1,12 @@
-<script>
-	// @ts-nocheck
+<script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { selectedFile, hotspotInfo } from './storedInfo';
+	import type {hotspot} from '$lib/types'
+	import { selectedFile, hotspotInfo } from '$lib/storedInfo';
 	import { get } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
 	export let sceneData; //import the scenedata from the sidebar component
-	let pannellumViewer;
-	let imgSrc;
+	let pannellumViewer: any;
+	let imageSrc: string | null | undefined;
 	let showText = true;
 	let panoElement;
 	let yaw = 0;
@@ -14,7 +14,9 @@
 
 	const dispatch = createEventDispatcher();
 
-	
+	function updateYawPitch(data) {
+		dispatch('update', data);
+	}
 	onMount(() => {
 		// Subscribe to the selectedFile store
 		const subscribeFile = selectedFile.subscribe((imageData) => {
@@ -23,10 +25,10 @@
 				showText = false;
 				const reader = new FileReader();
 				reader.onload = (event) => {
-					imgSrc = event.target.result;
-					console.log('Image Source:', imgSrc);
+					imageSrc = (event.target as FileReader).result as string;
+					console.log('Image Source:', imageSrc);
 					if (window.pannellum) {
-						initPanorama(imgSrc);
+						initPanorama(imageSrc);
 					} else {
 						console.error('Pannellum not loaded');
 					}
@@ -42,7 +44,7 @@
 		const subscribeHotspots = hotspotInfo.subscribe((value) => {
 			if (pannellumViewer) {
 				// Reload the panorama with the new hotspots
-				initPanorama(imgSrc);
+				initPanorama(imageSrc);
 			}
 		});
 
@@ -66,7 +68,7 @@
 	// Clear the interval when the component is destroyed
 	onDestroy(() => clearInterval(logInterval));
 
-	function initPanorama(imageSrc) {
+	function initPanorama(imageSrc: string | null | undefined) {
 		if (pannellumViewer) {
 			pannellumViewer.destroy();
 		}
