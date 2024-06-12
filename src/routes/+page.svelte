@@ -12,7 +12,7 @@
 	};
 
 	type SceneData = {
-		imgSrc: string;
+		imageSrc: string;
 	};
 	let panoramaData: PanoramaData = { yaw: 0, pitch: 0 };
 	let sceneData: SceneData[] = [];

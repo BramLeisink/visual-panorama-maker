@@ -1,5 +1,4 @@
 <script lang="ts">
-	//@ts-nocheck
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -7,10 +6,12 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 
+	import type { hotspot } from '$lib/types';
+
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 
-	import { hotspotInfo } from './storedInfo'; //imports the yaw pitch writable
+	import { hotspotInfo } from '$lib/storedInfo'; //imports the yaw pitch writable
 	import { writable } from 'svelte/store';
 	const hotspots = [
 		{ icon: 'info', type: 'info hotspot' },
@@ -20,8 +21,8 @@
 
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 	let visible: boolean[] = Array(2).fill(true); // if visible icon shows else input fields show.
-	let scene = []; //define the scene array
-	let imgSrc;
+	let scene: any[] = []; //define the scene array
+	let imageSrc;
 	function openInput(i: number) {
 		visible = visible.map((state, index) => (index === i ? false : state));
 	}
@@ -40,17 +41,20 @@
 			const url = (form.querySelector('#url') as HTMLInputElement).value;
 			hotspotInfo.update((values) => [...values, { yaw, pitch, type: type, text: text, URL: url }]);
 		} else {
-			hotspotInfo.update((values) => [...values, { yaw, pitch, type: type, text: text }]);
+			hotspotInfo.update((values) => [
+				...values,
+				{ yaw, pitch, type: type, text: text, URL: null }
+			]);
 		}
 
 		visible[index] = true;
 	}
 
-	function addScene(event) {
+	function addScene(event: any) {
 		const files = event.target.files;
 		for (let i = 0; i < files.length; i++) {
-			const imgSrc = URL.createObjectURL(files[i]);
-			scene = [...scene, imgSrc];
+			const imageSrc = URL.createObjectURL(files[i]);
+			scene = [...scene, imageSrc];
 		}
 		console.log(scene);
 	}
@@ -123,8 +127,6 @@
 								</form>
 							{/if}
 						{/each}
-
-						
 					</div>
 				</Card.Content>
 			</Card.Root>

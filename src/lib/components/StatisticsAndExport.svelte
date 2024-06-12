@@ -6,7 +6,7 @@
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label/index';
 	import { Skeleton } from '$lib/components/ui/skeleton/index';
-	import { hotspotInfo } from './storedInfo';
+	import { hotspotInfo } from '$lib/storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
 	export let data;
