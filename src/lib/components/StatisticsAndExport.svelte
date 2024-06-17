@@ -6,7 +6,7 @@
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label/index';
 	import { Skeleton } from '$lib/components/ui/skeleton/index';
-	import { hotspotInfo } from '$lib/storedInfo';
+	import { hotspotsList } from '$lib/storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
 	import { copyText } from 'svelte-copy';
@@ -21,9 +21,9 @@
 		});
 	}
 	onMount(() => {
-		hotspotInfo.subscribe((value) => {
-			console.log(value);
-			info = value;
+		hotspotsList.subscribe((value) => {
+			info = Object.values(value);
+			console.log(info)
 			infoText =
 				'{"type": "equirectangular", "panorama": "YOUR IMAGE HERE", "hotspots": ' +
 				JSON.stringify(info, null, "\t") +
@@ -35,7 +35,7 @@
 <svelte:head>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 </svelte:head>
-<Tabs.Root value="statistics" class="h-full w-full">
+<Tabs.Root value="export" class="w-full">
 	<Tabs.List class="grid w-full grid-cols-2">
 		<Tabs.Trigger value="statistics">Statistics</Tabs.Trigger>
 		<Tabs.Trigger value="export">Export</Tabs.Trigger>

@@ -1,5 +1,7 @@
 <script lang="ts">
-	import PanoramaEditing from '$lib/components/PanoramaEditing.svelte';
+	import EditHotspot from '$lib/components/EditHotspot.svelte';
+	import HotspotsList from '$lib/components/HotspotsList.svelte';
+	import ImagePreview from '$lib/components/ImagePreview.svelte';
 	import PanoramaPreview from '$lib/components/PanoramaPreview.svelte';
 	import ComponentLib from '$lib/components/Sidebar.svelte';
 	import StatisticsAndExport from '$lib/components/StatisticsAndExport.svelte';
@@ -27,23 +29,36 @@
 
 <Resizable.PaneGroup direction="horizontal" class="h-full w-full">
 	<Resizable.Pane defaultSize={25} class="p-2">
-		<ComponentLib on:update={handleScenes}/>
+		<Resizable.PaneGroup direction="vertical">
+			<Resizable.Pane defaultSize={75}>
+				<HotspotsList currentViewport={panoramaData} />
+			</Resizable.Pane>
+			<Resizable.Handle withHandle />
+			<Resizable.Pane>
+				<ImagePreview />
+			</Resizable.Pane>
+		</Resizable.PaneGroup>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane defaultSize={50}>
-		<PanoramaEditing />
+		<Resizable.PaneGroup direction="vertical">
+			<Resizable.Pane>
+				<div class="p-2 overflow-y-auto">
+					<EditHotspot />
+				</div>
+				<!-- <ComponentLib on:update={handleScenes} /> -->
+			</Resizable.Pane>
+			<!-- <Resizable.Handle withHandle />
+			<Resizable.Pane>
+				<StatisticsAndExport data={panoramaData} />
+			</Resizable.Pane> -->
+		</Resizable.PaneGroup>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane defaultSize={50}>
 		<Resizable.PaneGroup direction="vertical">
 			<Resizable.Pane defaultSize={75}>
-				<PanoramaPreview on:update={handlePanoramaDataUpdate} sceneData={sceneData} />
-			</Resizable.Pane>
-			<Resizable.Handle withHandle />
-			<Resizable.Pane defaultSize={25}>
-				<div class="p-2">
-					<StatisticsAndExport data={panoramaData}/>
-				</div>
+				<PanoramaPreview on:update={handlePanoramaDataUpdate} {sceneData} />
 			</Resizable.Pane>
 		</Resizable.PaneGroup>
 	</Resizable.Pane>

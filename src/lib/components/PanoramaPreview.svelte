@@ -1,10 +1,23 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type {hotspot} from '$lib/types'
-	import { selectedFile, hotspotInfo } from '$lib/storedInfo';
+	import type { hotspot } from '$lib/types';
+	import { Button } from '$lib/components/ui/button/index';
+	import { selectedFile, hotspotsList, viewport } from '$lib/storedInfo';
 	import { get } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
-	export let sceneData; //import the scenedata from the sidebar component
+
+	import {
+		Maximize,
+		ChevronRight,
+		ChevronLeft,
+		ChevronDown,
+		ChevronUp,
+		ZoomIn,
+		ZoomOut
+	} from 'lucide-svelte';
+	import AddHotspotDialog from './AddHotspotDialog.svelte';
+
+	export let sceneData; // Import the scenedata from the sidebar component
 	let pannellumViewer: any;
 	let imageSrc: string | null | undefined;
 	let showText = true;
@@ -12,21 +25,24 @@
 	let yaw = 0;
 	let pitch = 0;
 
+	let addHotspotDialogOpen = false;
+	let positionToAddHotspot = { yaw: 0, pitch: 0 };
+
 	const dispatch = createEventDispatcher();
 
-	function updateYawPitch(data) {
+	function updateYawPitch(data: any) {
 		dispatch('update', data);
+		viewport.set(data); // Update the viewport store with yaw and pitch
 	}
+
 	onMount(() => {
 		// Subscribe to the selectedFile store
 		const subscribeFile = selectedFile.subscribe((imageData) => {
-			console.log('Selected File:', imageData);
 			if (imageData) {
 				showText = false;
 				const reader = new FileReader();
 				reader.onload = (event) => {
 					imageSrc = (event.target as FileReader).result as string;
-					console.log('Image Source:', imageSrc);
 					if (window.pannellum) {
 						initPanorama(imageSrc);
 					} else {
@@ -40,8 +56,8 @@
 			}
 		});
 
-		// Subscribe to the hotspotInfo store
-		const subscribeHotspots = hotspotInfo.subscribe((value) => {
+		// Subscribe to the hotspotsList store
+		const subscribeHotspots = hotspotsList.subscribe((value) => {
 			if (pannellumViewer) {
 				// Reload the panorama with the new hotspots
 				initPanorama(imageSrc);
@@ -57,6 +73,7 @@
 			}
 		};
 	});
+
 	const logInterval = setInterval(() => {
 		if (pannellumViewer) {
 			yaw = Math.round(pannellumViewer.getYaw());
@@ -65,6 +82,7 @@
 			dispatch('update', data);
 		}
 	}, 100); // set value every set time
+
 	// Clear the interval when the component is destroyed
 	onDestroy(() => clearInterval(logInterval));
 
@@ -73,17 +91,61 @@
 			pannellumViewer.destroy();
 		}
 
-		const hotspots = get(hotspotInfo);
+		const hotspotsDict = get(hotspotsList);
+		const hotspotsArray = Object.values(hotspotsDict);
 
 		pannellumViewer = pannellum.viewer('panorama', {
 			type: 'equirectangular',
 			panorama: imageSrc,
 			autoLoad: true,
-			hotSpotDebug: true,
-			hotSpots: hotspots,
+			hotSpots: hotspotsArray,
 			yaw: yaw,
-			pitch: pitch
+			pitch: pitch,
+			showControls: false
 		});
+	}
+
+	// Event handlers for controls
+	function panUp() {
+		if (pannellumViewer) {
+			pannellumViewer.setPitch(pannellumViewer.getPitch() + 10);
+		}
+	}
+
+	function panDown() {
+		if (pannellumViewer) {
+			pannellumViewer.setPitch(pannellumViewer.getPitch() - 10);
+		}
+	}
+
+	function panLeft() {
+		if (pannellumViewer) {
+			pannellumViewer.setYaw(pannellumViewer.getYaw() - 10);
+		}
+	}
+
+	function panRight() {
+		if (pannellumViewer) {
+			pannellumViewer.setYaw(pannellumViewer.getYaw() + 10);
+		}
+	}
+
+	function zoomIn() {
+		if (pannellumViewer) {
+			pannellumViewer.setHfov(pannellumViewer.getHfov() - 10);
+		}
+	}
+
+	function zoomOut() {
+		if (pannellumViewer) {
+			pannellumViewer.setHfov(pannellumViewer.getHfov() + 10);
+		}
+	}
+
+	function toggleFullscreen() {
+		if (pannellumViewer) {
+			pannellumViewer.toggleFullscreen();
+		}
 	}
 </script>
 
@@ -92,20 +154,45 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 </svelte:head>
 
-<div class="flex h-full items-center justify-center p-6">
+<div class="flex h-full items-center justify-center">
 	{#if showText}
-		<span class="font-semibold">Panorama preview</span>
+		<span class="font-semibold">Panorama preview: No image selected</span>
 	{:else}
 		<div bind:this={panoElement} id="panorama"></div>
+		<div id="controls">
+			<Button variant="outline" size="icon" on:click={panLeft}
+				><ChevronLeft class="h-4 w-4" /></Button
+			>
+			<Button variant="outline" size="icon" on:click={panRight}
+				><ChevronRight class="h-4 w-4" /></Button
+			>
+			<Button variant="outline" size="icon" on:click={panUp}><ChevronUp class="h-4 w-4" /></Button>
+			<Button variant="outline" size="icon" on:click={panDown}
+				><ChevronDown class="h-4 w-4" /></Button
+			>
+			<Button variant="outline" size="icon" on:click={zoomIn}><ZoomIn class="h-4 w-4" /></Button>
+			<Button variant="outline" size="icon" on:click={zoomOut}><ZoomOut class="h-4 w-4" /></Button>
+			<Button variant="outline" size="icon" on:click={toggleFullscreen}
+				><Maximize class="h-4 w-4" /></Button
+			>
+		</div>
 	{/if}
 	{#each sceneData as scene}
-	<p>{scene}</p>
+		<p>{scene}</p>
 	{/each}
 </div>
 
 <style>
 	#panorama {
-		width: 600px;
-		height: 400px;
+		width: 100%;
+		height: calc(100vh - 2.5rem);
+	}
+
+	#controls {
+		position: absolute;
+		bottom: 0;
+		z-index: 2;
+		text-align: center;
+		padding-bottom: 3px;
 	}
 </style>

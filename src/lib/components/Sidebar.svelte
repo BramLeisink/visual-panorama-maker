@@ -32,6 +32,7 @@
 		console.log('works');
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
+		const hotspotname = (form.querySelector('#hotspotname') as HTMLInputElement).value; //yaw
 		const yaw = (form.querySelector('#yaw') as HTMLInputElement).value; //yaw
 		const pitch = (form.querySelector('#pitch') as HTMLInputElement).value; //pitch
 		const text = (form.querySelector('#text') as HTMLInputElement).value; // the text to display on hover of the hotspot
@@ -39,11 +40,11 @@
 		console.log(`Yaw: ${yaw} Pitch: ${pitch}`);
 		if (type == 'info hotspot') {
 			const url = (form.querySelector('#url') as HTMLInputElement).value;
-			hotspotInfo.update((values) => [...values, { yaw, pitch, type: type, text: text, URL: url }]);
+			hotspotInfo.update((values) => [...values, {hotspotname, yaw, pitch, type: type, text: text, URL: url }]);
 		} else {
 			hotspotInfo.update((values) => [
 				...values,
-				{ yaw, pitch, type: type, text: text, URL: null }
+				{hotspotname, yaw, pitch, type: type, text: text, URL: null }
 			]);
 		}
 
@@ -95,9 +96,18 @@
 									<input
 										type="text"
 										class="border"
+										name="hotspotname"
+										id="hotspotname"
+										placeholder="Name"
+										required
+									/>
+
+									<input
+										type="text"
+										class="border"
 										name="yaw"
 										id="yaw"
-										placeholder="yaw"
+										placeholder="Yaw"
 										required
 									/>
 									<input
@@ -105,16 +115,17 @@
 										class="border"
 										name="pitch"
 										id="pitch"
-										placeholder="pitch"
+										placeholder="Pitch"
 										required
 									/>
 									<input type="text" name="text" id="text" placeholder="Text to display on hover" />
+
 									{#if hotspot.type == 'info hotspot'}
-										<input type="url" name="url" id="url" placeholder="url" />
+										<input type="url" name="url" id="url" placeholder="URL" />
 									{:else if hotspot.type == 'scene hotspot'}
 										<input type="file" name="scene" id="scene" on:change={addScene} hidden /><br />
 										<div class="sceneDiv w-max rounded bg-red-800">
-											<label for="scene" class=" cursor-pointer">Upload scene</label>
+											<label for="scene" class="cursor-pointer">Upload scene</label>
 										</div>
 										<br />
 									{/if}
@@ -122,7 +133,7 @@
 									<input
 										type="submit"
 										class="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-										value="submit"
+										value="Submit"
 									/>
 								</form>
 							{/if}

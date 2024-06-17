@@ -1,4 +1,5 @@
 export interface hotspot {
+    id: string,
     yaw: string | number,
     pitch: string | number,
     type: string, 
