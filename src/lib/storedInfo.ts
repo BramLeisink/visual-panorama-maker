@@ -8,3 +8,5 @@ export const hotspotInfo = writable<hotspot[]>([]); // Dont use! Use hotspotsLis
 export const hotspotsList = writable<Record<string, hotspot>>({});
 
 export const selectedHotspot = writable<string>("")
+
+export const viewerSettings = writable({locationPicker:false})

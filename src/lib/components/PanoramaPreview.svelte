@@ -2,7 +2,13 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { hotspot } from '$lib/types';
 	import { Button } from '$lib/components/ui/button/index';
-	import { selectedFile, hotspotsList, viewport } from '$lib/storedInfo';
+	import {
+		selectedFile,
+		hotspotsList,
+		viewport,
+		selectedHotspot,
+		viewerSettings
+	} from '$lib/storedInfo';
 	import { get } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
 
@@ -25,15 +31,7 @@
 	let yaw = 0;
 	let pitch = 0;
 
-	let addHotspotDialogOpen = false;
-	let positionToAddHotspot = { yaw: 0, pitch: 0 };
-
 	const dispatch = createEventDispatcher();
-
-	function updateYawPitch(data: any) {
-		dispatch('update', data);
-		viewport.set(data); // Update the viewport store with yaw and pitch
-	}
 
 	onMount(() => {
 		// Subscribe to the selectedFile store
@@ -64,10 +62,21 @@
 			}
 		});
 
+		const subscribeSelectedHotspot = selectedHotspot.subscribe((key) => {
+			if (pannellumViewer && key) {
+				const hotspot = get(hotspotsList)[key];
+				if (hotspot) {
+					pannellumViewer.setYaw(Number(hotspot.yaw));
+					pannellumViewer.setPitch(Number(hotspot.pitch));
+				}
+			}
+		});
+
 		// Unsubscribe when the component is destroyed
 		return () => {
 			subscribeFile();
 			subscribeHotspots();
+			subscribeSelectedHotspot();
 			if (pannellumViewer) {
 				pannellumViewer.destroy();
 			}
@@ -92,7 +101,12 @@
 		}
 
 		const hotspotsDict = get(hotspotsList);
-		const hotspotsArray = Object.values(hotspotsDict);
+		const hotspotsArray = Object.entries(hotspotsDict).map(([key, hotspot]) => ({
+			...hotspot,
+			clickHandlerFunc: () => {
+				selectedHotspot.set(key);
+			}
+		}));
 
 		pannellumViewer = pannellum.viewer('panorama', {
 			type: 'equirectangular',
@@ -154,7 +168,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 </svelte:head>
 
-<div class="flex h-full items-center justify-center">
+<div class="flex h-full cursor-crosshair items-center justify-center">
 	{#if showText}
 		<span class="font-semibold">Panorama preview: No image selected</span>
 	{:else}
@@ -186,6 +200,7 @@
 	#panorama {
 		width: 100%;
 		height: calc(100vh - 2.5rem);
+		cursor: crosshair;
 	}
 
 	#controls {

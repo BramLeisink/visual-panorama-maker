@@ -23,7 +23,6 @@
 	onMount(() => {
 		hotspotsList.subscribe((value) => {
 			info = Object.values(value);
-			console.log(info)
 			infoText =
 				'{"type": "equirectangular", "panorama": "YOUR IMAGE HERE", "hotspots": ' +
 				JSON.stringify(info, null, "\t") +

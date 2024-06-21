@@ -28,6 +28,7 @@
 	// Function to select a hotspot by key
 	function selectHotspot(key: string) {
 		currentSelectedHotspot = key;
+		console.log(hotspotsList)
 		selectedHotspot.set(key);
 	}
 
@@ -35,9 +36,6 @@
 	onMount(() => {
 		hotspotsList.subscribe((value) => {
 			info = value;
-		});
-		viewport.subscribe((value) => {
-			currentViewport = value;
 		});
 		selectedHotspot.subscribe((value) => {
 			currentSelectedHotspot = value;

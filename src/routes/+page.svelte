@@ -42,16 +42,10 @@
 	<Resizable.Handle withHandle />
 	<Resizable.Pane defaultSize={50}>
 		<Resizable.PaneGroup direction="vertical">
-			<Resizable.Pane>
-				<div class="p-2 overflow-y-auto">
+				<div class="p-2 flex flex-col gap-2 overflow-y-auto">
 					<EditHotspot />
+					<StatisticsAndExport data={panoramaData} />
 				</div>
-				<!-- <ComponentLib on:update={handleScenes} /> -->
-			</Resizable.Pane>
-			<!-- <Resizable.Handle withHandle />
-			<Resizable.Pane>
-				<StatisticsAndExport data={panoramaData} />
-			</Resizable.Pane> -->
 		</Resizable.PaneGroup>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />

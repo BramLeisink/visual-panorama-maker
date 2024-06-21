@@ -5,9 +5,11 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { Toggle } from './ui/toggle/index';
 
-	import { hotspotsList, selectedHotspot } from '$lib/storedInfo';
+	import { Locate } from 'lucide-svelte';
 
+	import { hotspotsList, selectedHotspot, viewerSettings } from '$lib/storedInfo';
 	let info: Record<string, any> = {};
 	let hotspot: string = '';
 
@@ -34,6 +36,16 @@
 			}));
 		}
 	}
+
+	function removeHotspot() {
+		if (hotspot && info[hotspot]) {
+			hotspotsList.update((currentHotspots) => {
+				const { [hotspot]: _, ...rest } = currentHotspots; // Use destructuring to remove the hotspot
+				return rest;
+			});
+			selectedHotspot.set('');
+		}
+	}
 </script>
 
 {#if hotspot}
@@ -55,7 +67,7 @@
 						<Label for="id">ID</Label>
 						<Input id="id" bind:value={info[hotspot].id} />
 					</div>
-					<div class="flex flex-row justify-stretch gap-2">
+					<div class="flex flex-row items-end justify-stretch gap-2">
 						<div class="flex-1 space-y-1">
 							<Label for="yaw">Yaw</Label>
 							<Input id="yaw" bind:value={info[hotspot].yaw} type="number" />
@@ -64,6 +76,9 @@
 							<Label for="pitch">Pitch</Label>
 							<Input id="pitch" bind:value={info[hotspot].pitch} type="number" />
 						</div>
+						<!-- <Toggle variant="outline" aria-label="Toggle italic" bind:pressed={$viewerSettings.locationPicker}>
+							<Locate class="h-4 w-4" />
+						</Toggle> -->
 					</div>
 					<div class="space-y-1">
 						<Label for="tooltip">Tooltip</Label>
@@ -71,7 +86,10 @@
 					</div>
 				</Card.Content>
 				<Card.Footer>
-					<Button on:click={saveChanges}>Save changes</Button>
+					<div class="flex gap-2 flex-wrap">
+						<Button on:click={saveChanges}>Save changes</Button>
+						<Button on:click={removeHotspot} variant="destructive">Delete Hotspot</Button>
+					</div>
 				</Card.Footer>
 			</Card.Root>
 		</Tabs.Content>
@@ -79,9 +97,7 @@
 			<Card.Root>
 				<Card.Header>
 					<Card.Title>Appearance</Card.Title>
-					<Card.Description>
-						Change the looks of the Hotspot here.
-					</Card.Description>
+					<Card.Description>Change the looks of the Hotspot here.</Card.Description>
 				</Card.Header>
 				<Card.Footer>
 					<Button>Save changes</Button>

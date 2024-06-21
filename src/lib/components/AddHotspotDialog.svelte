@@ -9,14 +9,19 @@
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label/index';
 
-	export let position = { yaw: 0, pitch: 0 };
-	let yaw = position.yaw;
-	let pitch = position.pitch;
+	export let position = { pitch: 0, yaw: 0 };
+	let yaw = 0;
+	let pitch = 0;
 	let id = 'MyHotspot';
 	let description = '';
 	let errorMessage = '';
 
-	export let dialogOpen = false;
+	let dialogOpen = false;
+
+	function setToCurrentYawPitch() {
+		yaw = position.yaw
+		pitch = position.pitch
+	}
 
 	function addHotspot() {
 		const currentHotspots = get(hotspotsList);
@@ -35,8 +40,8 @@
 				...values,
 				[id]: {
 					id,
-					yaw: position.yaw,
-					pitch: position.pitch,
+					yaw: yaw,
+					pitch: pitch,
 					type: 'info',
 					text: description,
 					URL: null
@@ -48,7 +53,7 @@
 	}
 </script>
 
-<Dialog.Root bind:open={dialogOpen}>
+<Dialog.Root bind:open={dialogOpen} onOpenChange={setToCurrentYawPitch}>
 	<Dialog.Trigger><slot /></Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
