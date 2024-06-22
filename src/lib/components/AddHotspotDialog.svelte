@@ -44,7 +44,8 @@
 					pitch: pitch,
 					type: 'info',
 					text: description,
-					URL: null
+					URL: null,
+					cssClass: ""
 				}
 			}));
 			selectedHotspot.set(id);

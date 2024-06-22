@@ -31,7 +31,8 @@
 					id: info[hotspot].id,
 					yaw: info[hotspot].yaw,
 					pitch: info[hotspot].pitch,
-					description: info[hotspot].text
+					description: info[hotspot].text,
+					cssClass: info[hotspot].cssClass
 				}
 			}));
 		}
@@ -83,6 +84,10 @@
 					<div class="space-y-1">
 						<Label for="tooltip">Tooltip</Label>
 						<Input id="tooltip" bind:value={info[hotspot].text} />
+					</div>
+					<div class="space-y-1">
+						<Label for="cssclass">Css Classes (tailwindCSS)</Label>
+						<Input id="cssclass" bind:value={info[hotspot].cssClass} />
 					</div>
 				</Card.Content>
 				<Card.Footer>

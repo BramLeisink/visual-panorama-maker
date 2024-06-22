@@ -101,6 +101,7 @@
 		}
 
 		const hotspotsDict = get(hotspotsList);
+		console.log(hotspotsDict)
 		const hotspotsArray = Object.entries(hotspotsDict).map(([key, hotspot]) => ({
 			...hotspot,
 			clickHandlerFunc: () => {

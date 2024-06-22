@@ -44,7 +44,7 @@
 	}
   </script>
   
-  <div class="relative flex h-full items-center justify-center rounded overflow-hidden">
+  <div class="relative flex h-full items-center justify-center rounded overflow-hidden h-full">
 	<!-- Background image and overlay -->
 	<div class="absolute inset-0 z-10" style="background-image: url({imageSrc}); background-size: cover; background-position: center;">
 	  <div class="absolute inset-0 bg-gray-900 opacity-50"></div> <!-- Overlay -->

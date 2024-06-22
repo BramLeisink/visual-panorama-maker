@@ -4,5 +4,6 @@ export interface hotspot {
     pitch: number,
     type: string, 
     text: string | null | undefined,
-    URL: string | null | undefined
+    URL: string | null | undefined,
+    cssClass: string
 }
