@@ -4,7 +4,11 @@
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 
-	let mode: string;
+	import { viewerSettings } from '$lib/storedInfo';
+	import Separator from './ui/separator/separator.svelte';
+	import MenubarLabel from './ui/menubar/menubar-label.svelte';
+
+	let mode: string | undefined;
 </script>
 
 <Menubar.Root>
@@ -38,30 +42,56 @@
 	<Menubar.Menu>
 		<Menubar.Trigger>View</Menubar.Trigger>
 		<Menubar.Content>
-			<Menubar.Item>Switch color mode</Menubar.Item>
-			<Menubar.RadioGroup value={mode}>
-				<Menubar.RadioItem
-					on:click={function () {
-						setMode('light');
-						mode = 'light';
-					}}
-					value="light">Light</Menubar.RadioItem
-				>
-				<Menubar.RadioItem
-					on:click={function () {
-						setMode('dark');
-						mode = 'dark';
-					}}
-					value="dark">Dark</Menubar.RadioItem
-				>
-				<Menubar.RadioItem
-					on:click={function () {
-						resetMode();
-						mode = 'system';
-					}}
-					value="undefined">System</Menubar.RadioItem
-				>
-			</Menubar.RadioGroup>
+			<MenubarLabel>Panorama settings</MenubarLabel>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.compass}
+				>Show compass</Menubar.CheckboxItem
+			>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate}>Rotate</Menubar.CheckboxItem>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}
+				>Look at selected Hotspot</Menubar.CheckboxItem
+			>
+			<Menubar.Separator />
+			<Menubar.Sub>
+				<Menubar.SubTrigger>Precision</Menubar.SubTrigger>
+				<Menubar.SubContent>
+					<Menubar.RadioGroup bind:value={$viewerSettings.precision}>
+						<Menubar.RadioItem value="0">0</Menubar.RadioItem>
+						<Menubar.RadioItem value="1">1</Menubar.RadioItem>
+						<Menubar.RadioItem value="2">2</Menubar.RadioItem>
+						<Menubar.RadioItem value="3">3</Menubar.RadioItem>
+					</Menubar.RadioGroup>
+				</Menubar.SubContent>
+			</Menubar.Sub>
+
+			<Menubar.Separator />
+			<Menubar.Sub>
+				<Menubar.SubTrigger>Switch color mode</Menubar.SubTrigger>
+				<Menubar.SubContent>
+					<Menubar.RadioGroup value={mode}>
+						<Menubar.RadioItem
+							on:click={function () {
+								setMode('light');
+								mode = 'light';
+							}}
+							value="light">Light</Menubar.RadioItem
+						>
+						<Menubar.RadioItem
+							on:click={function () {
+								setMode('dark');
+								mode = 'dark';
+							}}
+							value="dark">Dark</Menubar.RadioItem
+						>
+						<Menubar.RadioItem
+							on:click={function () {
+								resetMode();
+								mode = 'system';
+							}}
+							value={undefined}>System</Menubar.RadioItem
+						>
+					</Menubar.RadioGroup>
+				</Menubar.SubContent>
+			</Menubar.Sub>
 		</Menubar.Content>
 	</Menubar.Menu>
 </Menubar.Root>

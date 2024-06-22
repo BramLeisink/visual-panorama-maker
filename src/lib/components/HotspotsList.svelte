@@ -28,7 +28,6 @@
 	// Function to select a hotspot by key
 	function selectHotspot(key: string) {
 		currentSelectedHotspot = key;
-		console.log(hotspotsList)
 		selectedHotspot.set(key);
 	}
 

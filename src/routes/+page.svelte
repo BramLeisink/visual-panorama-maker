@@ -8,6 +8,9 @@
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
 	import ResizableHandle from '$lib/components/ui/resizable/resizable-handle.svelte';
 	import ResizablePaneGroup from '$lib/components/ui/resizable/resizable-pane-group.svelte';
+
+	import { viewerSettings } from '$lib/storedInfo';
+
 	type PanoramaData = {
 		yaw: number;
 		pitch: number;
@@ -49,7 +52,7 @@
 		</Resizable.PaneGroup>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={50}>
+	<Resizable.Pane defaultSize={50} onResize={(size) => $viewerSettings.panoramaPaneSize = size}>
 		<Resizable.PaneGroup direction="vertical">
 			<Resizable.Pane defaultSize={75}>
 				<PanoramaPreview on:update={handlePanoramaDataUpdate} {sceneData} />

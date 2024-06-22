@@ -7,7 +7,8 @@
 		hotspotsList,
 		viewport,
 		selectedHotspot,
-		viewerSettings
+		viewerSettings,
+		clickedLocation
 	} from '$lib/storedInfo';
 	import { get } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
@@ -27,7 +28,7 @@
 	let pannellumViewer: any;
 	let imageSrc: string | null | undefined;
 	let showText = true;
-	let panoElement;
+	let panoElement: any;
 	let yaw = 0;
 	let pitch = 0;
 
@@ -63,7 +64,7 @@
 		});
 
 		const subscribeSelectedHotspot = selectedHotspot.subscribe((key) => {
-			if (pannellumViewer && key) {
+			if (pannellumViewer && key && $viewerSettings.lookAtSelected) {
 				const hotspot = get(hotspotsList)[key];
 				if (hotspot) {
 					pannellumViewer.setYaw(Number(hotspot.yaw));
@@ -72,11 +73,18 @@
 			}
 		});
 
+		const subscribeViewerSettings = viewerSettings.subscribe((settings) => {
+			if (pannellumViewer && settings) {
+				initPanorama(imageSrc);
+			}
+		});
+
 		// Unsubscribe when the component is destroyed
 		return () => {
 			subscribeFile();
 			subscribeHotspots();
 			subscribeSelectedHotspot();
+			subscribeViewerSettings();
 			if (pannellumViewer) {
 				pannellumViewer.destroy();
 			}
@@ -85,8 +93,8 @@
 
 	const logInterval = setInterval(() => {
 		if (pannellumViewer) {
-			yaw = Math.round(pannellumViewer.getYaw());
-			pitch = Math.round(pannellumViewer.getPitch());
+			yaw = parseFloat(pannellumViewer.getYaw().toFixed($viewerSettings.precision));
+			pitch = parseFloat(pannellumViewer.getPitch().toFixed($viewerSettings.precision));
 			const data = { yaw, pitch };
 			dispatch('update', data);
 		}
@@ -101,7 +109,6 @@
 		}
 
 		const hotspotsDict = get(hotspotsList);
-		console.log(hotspotsDict)
 		const hotspotsArray = Object.entries(hotspotsDict).map(([key, hotspot]) => ({
 			...hotspot,
 			clickHandlerFunc: () => {
@@ -116,7 +123,18 @@
 			hotSpots: hotspotsArray,
 			yaw: yaw,
 			pitch: pitch,
+			compass: $viewerSettings.compass,
+			autoRotate: Number($viewerSettings.autoRotate) * -5,
 			showControls: false
+		});
+
+		// Add event listener for clicks on the panorama
+		panoElement.addEventListener('click', (event: any) => {
+			const [clickPitch, clickYaw] = pannellumViewer.mouseEventToCoords(event);
+			$clickedLocation = {
+				yaw: parseFloat(clickYaw.toFixed($viewerSettings.precision)),
+				pitch: parseFloat(clickPitch.toFixed($viewerSettings.precision))
+			};
 		});
 	}
 

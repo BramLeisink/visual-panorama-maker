@@ -29,6 +29,9 @@ dependencies:
   pannellum:
     specifier: ^2.5.6
     version: 2.5.6
+  runed:
+    specifier: ^0.12.1
+    version: 0.12.1(svelte@4.2.17)
   svelte-copy:
     specifier: ^1.4.2
     version: 1.4.2(svelte@4.2.17)
@@ -2757,6 +2760,16 @@ packages:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
     dependencies:
       queue-microtask: 1.2.3
+
+  /runed@0.12.1(svelte@4.2.17):
+    resolution: {integrity: sha512-BlVXcGQ8+Rb7Klh2WO4y1em1Z15kYQMM0lG8bZhknAOKFUAyNHA5DgBhFNzKAUCCkgXf7GTmQng100Z5Xc7QwA==}
+    peerDependencies:
+      svelte: ^5.0.0
+    dependencies:
+      esm-env: 1.0.0
+      nanoid: 5.0.7
+      svelte: 4.2.17
+    dev: false
 
   /sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}

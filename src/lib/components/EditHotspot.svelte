@@ -9,9 +9,11 @@
 
 	import { Locate } from 'lucide-svelte';
 
-	import { hotspotsList, selectedHotspot, viewerSettings } from '$lib/storedInfo';
+	import { hotspotsList, selectedHotspot, viewerSettings, clickedLocation } from '$lib/storedInfo';
 	let info: Record<string, any> = {};
 	let hotspot: string = '';
+	let errorMessage = '';
+	let locationPickerOn = false;
 
 	onMount(() => {
 		hotspotsList.subscribe((value) => {
@@ -19,22 +21,41 @@
 		});
 		selectedHotspot.subscribe((value) => {
 			hotspot = value;
+			errorMessage = '';
+		});
+
+		clickedLocation.subscribe((value) => {
+			locationPicker(value);
 		});
 	});
 
 	function saveChanges() {
-		if (hotspot && info[hotspot]) {
-			hotspotsList.update((values) => ({
-				...values,
-				[hotspot]: {
-					...values[hotspot],
-					id: info[hotspot].id,
-					yaw: info[hotspot].yaw,
-					pitch: info[hotspot].pitch,
-					description: info[hotspot].text,
-					cssClass: info[hotspot].cssClass
-				}
-			}));
+		const isValidId = /^[a-zA-Z0-9_-]+$/.test(info[hotspot].id); // Check for valid characters (alphanumeric, hyphen, underscore)
+		const isUniqueId = Object.keys(info).every(
+			(key) => key === hotspot || info[key].id !== info[hotspot].id
+		); // Check for uniqueness
+
+		if (!isValidId) {
+			errorMessage = 'ID must only contain letters, numbers, hyphens, and underscores.';
+			console.log(errorMessage);
+		} else if (!isUniqueId) {
+			errorMessage = 'ID must be unique. This ID is already in use.';
+			console.log(errorMessage);
+		} else {
+			errorMessage = '';
+			if (hotspot && info[hotspot]) {
+				hotspotsList.update((values) => ({
+					...values,
+					[hotspot]: {
+						...values[hotspot],
+						id: info[hotspot].id,
+						yaw: info[hotspot].yaw,
+						pitch: info[hotspot].pitch,
+						text: info[hotspot].text,
+						cssClass: info[hotspot].cssClass
+					}
+				}));
+			}
 		}
 	}
 
@@ -45,6 +66,14 @@
 				return rest;
 			});
 			selectedHotspot.set('');
+		}
+	}
+
+	function locationPicker(location: { yaw: number; pitch: number }) {
+		if (locationPickerOn && location.yaw && location.pitch) {
+			info[hotspot].yaw = Number(location.yaw);
+			info[hotspot].pitch = Number(location.pitch);
+			locationPickerOn = false;
 		}
 	}
 </script>
@@ -77,9 +106,9 @@
 							<Label for="pitch">Pitch</Label>
 							<Input id="pitch" bind:value={info[hotspot].pitch} type="number" />
 						</div>
-						<!-- <Toggle variant="outline" aria-label="Toggle italic" bind:pressed={$viewerSettings.locationPicker}>
+						<Toggle variant="outline" aria-label="Toggle italic" bind:pressed={locationPickerOn}>
 							<Locate class="h-4 w-4" />
-						</Toggle> -->
+						</Toggle>
 					</div>
 					<div class="space-y-1">
 						<Label for="tooltip">Tooltip</Label>
@@ -89,9 +118,12 @@
 						<Label for="cssclass">Css Classes (tailwindCSS)</Label>
 						<Input id="cssclass" bind:value={info[hotspot].cssClass} />
 					</div>
+					{#if errorMessage}
+						<div class="text-center text-red-500">{errorMessage}</div>
+					{/if}
 				</Card.Content>
 				<Card.Footer>
-					<div class="flex gap-2 flex-wrap">
+					<div class="flex flex-wrap gap-2">
 						<Button on:click={saveChanges}>Save changes</Button>
 						<Button on:click={removeHotspot} variant="destructive">Delete Hotspot</Button>
 					</div>
