@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type { hotspot } from '$lib/types';
+	import type { HotSpot } from '$lib/types';
 	import { Button } from '$lib/components/ui/button/index';
 	import {
 		selectedFile,
-		hotspotsList,
+		hotSpotsList,
 		viewport,
-		selectedHotspot,
+		selectedHotSpot,
 		viewerSettings,
-		clickedLocation
+		clickedLocation,
+		pannellumSetup
 	} from '$lib/storedInfo';
 	import { get } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
@@ -20,14 +21,15 @@
 		ChevronDown,
 		ChevronUp,
 		ZoomIn,
-		ZoomOut
+		ZoomOut,
+		RefreshCcw
 	} from 'lucide-svelte';
-	import AddHotspotDialog from './AddHotspotDialog.svelte';
+	import AddHotSpotDialog from './AddHotSpotDialog.svelte';
 
 	export let sceneData; // Import the scenedata from the sidebar component
 	let pannellumViewer: any;
 	let imageSrc: string | null | undefined;
-	let showText = true;
+	let showText = false;
 	let panoElement: any;
 	let yaw = 0;
 	let pitch = 0;
@@ -35,6 +37,7 @@
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
+		initPanorama(imageSrc);
 		// Subscribe to the selectedFile store
 		const subscribeFile = selectedFile.subscribe((imageData) => {
 			if (imageData) {
@@ -43,7 +46,6 @@
 				reader.onload = (event) => {
 					imageSrc = (event.target as FileReader).result as string;
 					if (window.pannellum) {
-						initPanorama(imageSrc);
 					} else {
 						console.error('Pannellum not loaded');
 					}
@@ -55,20 +57,20 @@
 			}
 		});
 
-		// Subscribe to the hotspotsList store
-		const subscribeHotspots = hotspotsList.subscribe((value) => {
+		// Subscribe to the hotSpotsList store
+		const subscribeHotSpots = hotSpotsList.subscribe((value) => {
 			if (pannellumViewer) {
-				// Reload the panorama with the new hotspots
+				// Reload the panorama with the new hotSpots
 				initPanorama(imageSrc);
 			}
 		});
 
-		const subscribeSelectedHotspot = selectedHotspot.subscribe((key) => {
+		const subscribeSelectedHotSpot = selectedHotSpot.subscribe((key) => {
 			if (pannellumViewer && key && $viewerSettings.lookAtSelected) {
-				const hotspot = get(hotspotsList)[key];
-				if (hotspot) {
-					pannellumViewer.setYaw(Number(hotspot.yaw));
-					pannellumViewer.setPitch(Number(hotspot.pitch));
+				const hotSpot = get(hotSpotsList)[key];
+				if (hotSpot) {
+					pannellumViewer.setYaw(Number(hotSpot.yaw));
+					pannellumViewer.setPitch(Number(hotSpot.pitch));
 				}
 			}
 		});
@@ -82,8 +84,8 @@
 		// Unsubscribe when the component is destroyed
 		return () => {
 			subscribeFile();
-			subscribeHotspots();
-			subscribeSelectedHotspot();
+			subscribeHotSpots();
+			subscribeSelectedHotSpot();
 			subscribeViewerSettings();
 			if (pannellumViewer) {
 				pannellumViewer.destroy();
@@ -108,25 +110,15 @@
 			pannellumViewer.destroy();
 		}
 
-		const hotspotsDict = get(hotspotsList);
-		const hotspotsArray = Object.entries(hotspotsDict).map(([key, hotspot]) => ({
-			...hotspot,
+		const hotSpotsDict = get(hotSpotsList);
+		const hotSpotsArray = Object.entries(hotSpotsDict).map(([key, hotSpot]) => ({
+			...hotSpot,
 			clickHandlerFunc: () => {
-				selectedHotspot.set(key);
+				selectedHotSpot.set(key);
 			}
 		}));
 
-		pannellumViewer = pannellum.viewer('panorama', {
-			type: 'equirectangular',
-			panorama: imageSrc,
-			autoLoad: true,
-			hotSpots: hotspotsArray,
-			yaw: yaw,
-			pitch: pitch,
-			compass: $viewerSettings.compass,
-			autoRotate: Number($viewerSettings.autoRotate) * -5,
-			showControls: false
-		});
+		pannellumViewer = pannellum.viewer('panorama', $pannellumSetup);
 
 		// Add event listener for clicks on the panorama
 		panoElement.addEventListener('click', (event: any) => {
@@ -180,6 +172,7 @@
 			pannellumViewer.toggleFullscreen();
 		}
 	}
+	
 </script>
 
 <svelte:head>

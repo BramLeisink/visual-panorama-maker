@@ -7,11 +7,13 @@
 	import { viewerSettings } from '$lib/storedInfo';
 	import Separator from './ui/separator/separator.svelte';
 	import MenubarLabel from './ui/menubar/menubar-label.svelte';
+	import Switch from './ui/switch/switch.svelte';
+	import Label from './ui/label/label.svelte';
 
 	let mode: string | undefined;
 </script>
 
-<Menubar.Root>
+<Menubar.Root class="flex w-full flex-row">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
@@ -47,8 +49,10 @@
 				>Show compass</Menubar.CheckboxItem
 			>
 			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate}>Rotate</Menubar.CheckboxItem>
+			<Menubar.Separator />
+			<MenubarLabel>Developer mode</MenubarLabel>
 			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}
-				>Look at selected Hotspot</Menubar.CheckboxItem
+				>Look at selected HotSpot</Menubar.CheckboxItem
 			>
 			<Menubar.Separator />
 			<Menubar.Sub>
@@ -87,11 +91,16 @@
 								resetMode();
 								mode = 'system';
 							}}
-							value={undefined}>System</Menubar.RadioItem
+							value="">System</Menubar.RadioItem
 						>
 					</Menubar.RadioGroup>
 				</Menubar.SubContent>
 			</Menubar.Sub>
 		</Menubar.Content>
 	</Menubar.Menu>
+	<div class="flex-1"></div>
+	<div class="flex items-center space-x-2 px-2">
+		<Label for="devMode">Development Mode</Label>
+		<Switch id="devMode" bind:checked={$viewerSettings.developmentMode} />
+	</div>
 </Menubar.Root>

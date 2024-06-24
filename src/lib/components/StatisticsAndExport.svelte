@@ -1,5 +1,6 @@
-<script>
-	// @ts-nocheck
+<script lang="ts">
+	import { writable, derived } from 'svelte/store';
+
 	import * as Tabs from '$lib/components/ui/tabs/index';
 	import * as Card from '$lib/components/ui/card/index';
 	import { Button } from '$lib/components/ui/button/index';
@@ -8,7 +9,7 @@
 	import { Badge } from '$lib/components/ui/badge/index';
 	import { Switch } from '$lib/components/ui/switch/index';
 	import { Skeleton } from '$lib/components/ui/skeleton/index';
-	import { hotspotInfo, hotspotsList } from '$lib/storedInfo';
+	import { hotSpotInfo, hotSpotsList, pannellumSetup } from '$lib/storedInfo';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { onMount } from 'svelte';
 	import { copyText } from 'svelte-copy';
@@ -18,41 +19,43 @@
 	export let data;
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 
-	let hotspots = [];
-	let jsonConfigWithTailwind;
-	let jsonConfigWithoutTailwind;
+	let hotSpots = [];
+	let jsonConfigWithoutTailwind: string;
 	let cssFile = '';
 
 	let keepTailwind = true;
 
-	function removeHotspot(index) {
-		hotspotInfo.update((currentHotspots) => {
-			return currentHotspots.filter((item, i) => i !== index);
+	function removeHotSpot(index: number) {
+		hotSpotInfo.update((currentHotSpots) => {
+			return currentHotSpots.filter((item, i) => i !== index);
 		});
 	}
 
+	const jsonConfigWithTailwind = derived(pannellumSetup, ($pannellumSetup) =>
+		JSON.stringify($pannellumSetup, null, '\t')
+	);
+
 	onMount(() => {
-		hotspotsList.subscribe((value) => {
-			hotspots = Object.values(value);
-			let hotspotsNoTailwind = [];
+		pannellumSetup.subscribe((value) => {
+			let hotSpotsNoTailwind = [];
 			cssFile = '';
 
-			for (const hotspot of hotspots) {
-				if (hotspot.cssClass) {
-					cssFile += `.${hotspot.id} {${twi(hotspot.cssClass)}}\n`;
-				}
-				const hotspotWithoutTailwind = { ...hotspot, cssClass: hotspot.id };
+			// for (const hotSpot of hotSpots) {
+			// 	if (hotSpot.cssClass) {
+			// 		cssFile += `.${hotSpot.id} {${twi(hotSpot.cssClass)}}\n`;
+			// 	}
+			// 	const hotSpotWithoutTailwind = { ...hotSpot, cssClass: hotSpot.id };
 
-				hotspotsNoTailwind.push(hotspotWithoutTailwind);
-			}
-			jsonConfigWithTailwind =
-				'{"type": "equirectangular", "panorama": YOUR_IMAGE_HERE, "hotspots": ' +
-				JSON.stringify(hotspots, null, '\t') +
-				'}';
-			jsonConfigWithoutTailwind =
-				'{"type": "equirectangular", "panorama": YOUR_IMAGE_HERE, "hotspots": ' +
-				JSON.stringify(hotspotsNoTailwind, null, '\t') +
-				'}';
+			// 	hotSpotsNoTailwind.push(hotSpotWithoutTailwind);
+			// }
+			// jsonConfigWithTailwind =
+			// 	'{"type": "equirectangular", "panorama": YOUR_IMAGE_HERE, "hotSpots": ' +
+			// 	JSON.stringify(hotSpots, null, '\t') +
+			// 	'}';
+			// jsonConfigWithoutTailwind =
+			// 	'{"type": "equirectangular", "panorama": YOUR_IMAGE_HERE, "hotSpots": ' +
+			// 	JSON.stringify(hotSpotsNoTailwind, null, '\t') +
+			// 	'}';
 		});
 	});
 </script>
@@ -89,15 +92,17 @@
 					<h3 class="text-lg font-bold">pannellum.config.json</h3>
 					<Textarea placeholder="The final code goes here" bind:value={jsonConfigWithoutTailwind} />
 					<h3 class="text-lg font-bold">
-						pannellum-hotspots.css <Badge variant="destructive" class="ml-2"><TriangleAlert class="w-3 h-3 mr-2" />Experimental</Badge>
+						pannellum-hotSpots.css <Badge variant="destructive" class="ml-2"
+							><TriangleAlert class="mr-2 h-3 w-3" />Experimental</Badge
+						>
 					</h3>
 					<Textarea placeholder="The final code goes here" bind:value={cssFile} />
 				{:else}
 					<h3 class="text-lg font-bold">pannellum.config.json</h3>
-					<Textarea placeholder="The final code goes here" bind:value={jsonConfigWithTailwind} />
+					<Textarea placeholder="The final code goes here" bind:value={$jsonConfigWithTailwind} />
 				{/if}
 			</Card.Content>
-			<Card.Footer>
+			<!-- <Card.Footer>
 				<div class="flex flex-wrap gap-2">
 					<Button>Download</Button>
 					<Button
@@ -108,7 +113,7 @@
 						on:svelte-copy={(event) => alert(event.detail)}>Copy</Button
 					>
 				</div>
-			</Card.Footer>
+			</Card.Footer> -->
 		</Card.Root>
 	</Tabs.Content>
 </Tabs.Root>

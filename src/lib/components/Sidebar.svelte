@@ -6,17 +6,17 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 
-	import type { hotspot } from '$lib/types';
+	import type { HotSpot } from '$lib/types';
 
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 
-	import { hotspotInfo } from '$lib/storedInfo'; //imports the yaw pitch writable
+	import { hotSpotInfo } from '$lib/storedInfo'; //imports the yaw pitch writable
 	import { writable } from 'svelte/store';
-	const hotspots = [
-		{ icon: 'info', type: 'info hotspot' },
-		{ icon: 'arrow_circle_up', type: 'scene hotspot' }
-	]; //these are the hotspot types we have 2 an info and a scene hotspots we define the type
+	const hotSpots = [
+		{ icon: 'info', type: 'info hotSpot' },
+		{ icon: 'arrow_circle_up', type: 'scene hotSpot' }
+	]; //these are the hotSpot types we have 2 an info and a scene hotSpots we define the type
 	//and the icon that is shown in the sidebar
 
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
@@ -32,19 +32,19 @@
 		console.log('works');
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
-		const hotspotname = (form.querySelector('#hotspotname') as HTMLInputElement).value; //yaw
+		const hotSpotname = (form.querySelector('#hotSpotname') as HTMLInputElement).value; //yaw
 		const yaw = (form.querySelector('#yaw') as HTMLInputElement).value; //yaw
 		const pitch = (form.querySelector('#pitch') as HTMLInputElement).value; //pitch
-		const text = (form.querySelector('#text') as HTMLInputElement).value; // the text to display on hover of the hotspot
-		const type = hotspots[index].type;
+		const text = (form.querySelector('#text') as HTMLInputElement).value; // the text to display on hover of the hotSpot
+		const type = hotSpots[index].type;
 		console.log(`Yaw: ${yaw} Pitch: ${pitch}`);
-		if (type == 'info hotspot') {
+		if (type == 'info hotSpot') {
 			const url = (form.querySelector('#url') as HTMLInputElement).value;
-			hotspotInfo.update((values) => [...values, {hotspotname, yaw, pitch, type: type, text: text, URL: url }]);
+			hotSpotInfo.update((values) => [...values, {hotSpotname, yaw, pitch, type: type, text: text, URL: url }]);
 		} else {
-			hotspotInfo.update((values) => [
+			hotSpotInfo.update((values) => [
 				...values,
-				{hotspotname, yaw, pitch, type: type, text: text, URL: null }
+				{hotSpotname, yaw, pitch, type: type, text: text, URL: null }
 			]);
 		}
 
@@ -66,38 +66,38 @@
 </svelte:head>
 
 <div class="h-full max-h-screen overflow-y-auto">
-	<Tabs.Root value="hotspots" class="w-full">
+	<Tabs.Root value="hotSpots" class="w-full">
 		<Tabs.List class="grid w-full grid-cols-2">
-			<Tabs.Trigger value="hotspots">Hotspots</Tabs.Trigger>
+			<Tabs.Trigger value="hotSpots">HotSpots</Tabs.Trigger>
 			<Tabs.Trigger value="customize">Customize</Tabs.Trigger>
 		</Tabs.List>
-		<Tabs.Content value="hotspots">
+		<Tabs.Content value="hotSpots">
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Default hotspots</Card.Title>
+					<Card.Title>Default hotSpots</Card.Title>
 					<Card.Description>
-						Drag and drop these default hotspots into your image, you can always customize them
+						Drag and drop these default hotSpots into your image, you can always customize them
 						later.
 					</Card.Description>
 				</Card.Header>
 				<Card.Content class="space-y-2">
 					<div class="flex flex-wrap items-center justify-center gap-2">
-						{#each hotspots as hotspot, i}
+						{#each hotSpots as hotSpot, i}
 							{#if visible[i]}
 								<button
 									class="mt-12 h-24 w-32 cursor-pointer rounded"
 									on:click={() => openInput(i)}
 								>
-									<label for="">{hotspot.type}</label>
-									<span class="material-icons md-60">{hotspot.icon}</span></button
+									<label for="">{hotSpot.type}</label>
+									<span class="material-icons md-60">{hotSpot.icon}</span></button
 								>
 							{:else}
 								<form on:submit={(event) => handleSubmit(i, event)}>
 									<input
 										type="text"
 										class="border"
-										name="hotspotname"
-										id="hotspotname"
+										name="hotSpotname"
+										id="hotSpotname"
 										placeholder="Name"
 										required
 									/>
@@ -120,9 +120,9 @@
 									/>
 									<input type="text" name="text" id="text" placeholder="Text to display on hover" />
 
-									{#if hotspot.type == 'info hotspot'}
+									{#if hotSpot.type == 'info hotSpot'}
 										<input type="url" name="url" id="url" placeholder="URL" />
-									{:else if hotspot.type == 'scene hotspot'}
+									{:else if hotSpot.type == 'scene hotSpot'}
 										<input type="file" name="scene" id="scene" on:change={addScene} hidden /><br />
 										<div class="sceneDiv w-max rounded bg-red-800">
 											<label for="scene" class="cursor-pointer">Upload scene</label>
@@ -145,23 +145,23 @@
 		<Tabs.Content value="customize">
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Customize hotspot</Card.Title>
+					<Card.Title>Customize hotSpot</Card.Title>
 					<Card.Description>
-						Change the look and behaviour of the currently selected hotspot
+						Change the look and behaviour of the currently selected hotSpot
 					</Card.Description>
 				</Card.Header>
 				<Card.Content class="space-y-2">
 					<div class="space-y-1">
-						<Label for="hotspot-name">Name</Label>
-						<Input id="hotspot-name" type="text" />
+						<Label for="hotSpot-name">Name</Label>
+						<Input id="hotSpot-name" type="text" />
 					</div>
 					<div class="space-y-1">
-						<Label for="hotspot-tooltip">Tooltip</Label>
-						<Input id="hotspot-tooltip" type="text" />
+						<Label for="hotSpot-tooltip">Tooltip</Label>
+						<Input id="hotSpot-tooltip" type="text" />
 					</div>
 					<div class="space-y-1">
-						<Label for="hotspot-color">Color</Label>
-						<Input id="hotspot-color" type="color" />
+						<Label for="hotSpot-color">Color</Label>
+						<Input id="hotSpot-color" type="color" />
 					</div>
 				</Card.Content>
 				<Card.Footer>

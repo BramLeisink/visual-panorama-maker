@@ -9,18 +9,18 @@
 
 	import { Locate } from 'lucide-svelte';
 
-	import { hotspotsList, selectedHotspot, viewerSettings, clickedLocation } from '$lib/storedInfo';
+	import { hotSpotsList, selectedHotSpot, viewerSettings, clickedLocation } from '$lib/storedInfo';
 	let info: Record<string, any> = {};
-	let hotspot: string = '';
+	let hotSpot: string = '';
 	let errorMessage = '';
 	let locationPickerOn = false;
 
 	onMount(() => {
-		hotspotsList.subscribe((value) => {
+		hotSpotsList.subscribe((value) => {
 			info = value;
 		});
-		selectedHotspot.subscribe((value) => {
-			hotspot = value;
+		selectedHotSpot.subscribe((value) => {
+			hotSpot = value;
 			errorMessage = '';
 		});
 
@@ -30,9 +30,9 @@
 	});
 
 	function saveChanges() {
-		const isValidId = /^[a-zA-Z0-9_-]+$/.test(info[hotspot].id); // Check for valid characters (alphanumeric, hyphen, underscore)
+		const isValidId = /^[a-zA-Z0-9_-]+$/.test(info[hotSpot].id); // Check for valid characters (alphanumeric, hyphen, underscore)
 		const isUniqueId = Object.keys(info).every(
-			(key) => key === hotspot || info[key].id !== info[hotspot].id
+			(key) => key === hotSpot || info[key].id !== info[hotSpot].id
 		); // Check for uniqueness
 
 		if (!isValidId) {
@@ -43,42 +43,42 @@
 			console.log(errorMessage);
 		} else {
 			errorMessage = '';
-			if (hotspot && info[hotspot]) {
-				hotspotsList.update((values) => ({
+			if (hotSpot && info[hotSpot]) {
+				hotSpotsList.update((values) => ({
 					...values,
-					[hotspot]: {
-						...values[hotspot],
-						id: info[hotspot].id,
-						yaw: info[hotspot].yaw,
-						pitch: info[hotspot].pitch,
-						text: info[hotspot].text,
-						cssClass: info[hotspot].cssClass
+					[hotSpot]: {
+						...values[hotSpot],
+						id: info[hotSpot].id,
+						yaw: info[hotSpot].yaw,
+						pitch: info[hotSpot].pitch,
+						text: info[hotSpot].text,
+						cssClass: info[hotSpot].cssClass
 					}
 				}));
 			}
 		}
 	}
 
-	function removeHotspot() {
-		if (hotspot && info[hotspot]) {
-			hotspotsList.update((currentHotspots) => {
-				const { [hotspot]: _, ...rest } = currentHotspots; // Use destructuring to remove the hotspot
+	function removeHotSpot() {
+		if (hotSpot && info[hotSpot]) {
+			hotSpotsList.update((currentHotSpots) => {
+				const { [hotSpot]: _, ...rest } = currentHotSpots; // Use destructuring to remove the hotSpot
 				return rest;
 			});
-			selectedHotspot.set('');
+			selectedHotSpot.set('');
 		}
 	}
 
 	function locationPicker(location: { yaw: number; pitch: number }) {
 		if (locationPickerOn && location.yaw && location.pitch) {
-			info[hotspot].yaw = Number(location.yaw);
-			info[hotspot].pitch = Number(location.pitch);
+			info[hotSpot].yaw = Number(location.yaw);
+			info[hotSpot].pitch = Number(location.pitch);
 			locationPickerOn = false;
 		}
 	}
 </script>
 
-{#if hotspot}
+{#if hotSpot}
 	<Tabs.Root value="settings" class="w-full">
 		<Tabs.List class="grid w-full grid-cols-2">
 			<Tabs.Trigger value="settings">Settings</Tabs.Trigger>
@@ -87,24 +87,24 @@
 		<Tabs.Content value="settings">
 			<Card.Root class="h-full w-full">
 				<Card.Header>
-					<Card.Title>Edit Hotspot</Card.Title>
+					<Card.Title>Edit HotSpot</Card.Title>
 					<Card.Description>
-						Make changes to the selected hotspot. Click save when you're done.
+						Make changes to the selected hotSpot. Click save when you're done.
 					</Card.Description>
 				</Card.Header>
 				<Card.Content class="space-y-2">
 					<div class="space-y-1">
 						<Label for="id">ID</Label>
-						<Input id="id" bind:value={info[hotspot].id} />
+						<Input id="id" bind:value={info[hotSpot].id} />
 					</div>
 					<div class="flex flex-row items-end justify-stretch gap-2">
 						<div class="flex-1 space-y-1">
 							<Label for="yaw">Yaw</Label>
-							<Input id="yaw" bind:value={info[hotspot].yaw} type="number" />
+							<Input id="yaw" bind:value={info[hotSpot].yaw} type="number" />
 						</div>
 						<div class="flex-1 space-y-1">
 							<Label for="pitch">Pitch</Label>
-							<Input id="pitch" bind:value={info[hotspot].pitch} type="number" />
+							<Input id="pitch" bind:value={info[hotSpot].pitch} type="number" />
 						</div>
 						<Toggle variant="outline" aria-label="Toggle italic" bind:pressed={locationPickerOn}>
 							<Locate class="h-4 w-4" />
@@ -112,11 +112,11 @@
 					</div>
 					<div class="space-y-1">
 						<Label for="tooltip">Tooltip</Label>
-						<Input id="tooltip" bind:value={info[hotspot].text} />
+						<Input id="tooltip" bind:value={info[hotSpot].text} />
 					</div>
 					<div class="space-y-1">
 						<Label for="cssclass">Css Classes (tailwindCSS)</Label>
-						<Input id="cssclass" bind:value={info[hotspot].cssClass} />
+						<Input id="cssclass" bind:value={info[hotSpot].cssClass} />
 					</div>
 					{#if errorMessage}
 						<div class="text-center text-red-500">{errorMessage}</div>
@@ -125,7 +125,7 @@
 				<Card.Footer>
 					<div class="flex flex-wrap gap-2">
 						<Button on:click={saveChanges}>Save changes</Button>
-						<Button on:click={removeHotspot} variant="destructive">Delete Hotspot</Button>
+						<Button on:click={removeHotSpot} variant="destructive">Delete HotSpot</Button>
 					</div>
 				</Card.Footer>
 			</Card.Root>
@@ -134,7 +134,7 @@
 			<Card.Root>
 				<Card.Header>
 					<Card.Title>Appearance</Card.Title>
-					<Card.Description>Change the looks of the Hotspot here.</Card.Description>
+					<Card.Description>Change the looks of the HotSpot here.</Card.Description>
 				</Card.Header>
 				<Card.Footer>
 					<Button>Save changes</Button>
