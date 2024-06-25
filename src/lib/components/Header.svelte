@@ -7,11 +7,14 @@
 	import { viewerSettings } from '$lib/storedInfo';
 	import Separator from './ui/separator/separator.svelte';
 	import MenubarLabel from './ui/menubar/menubar-label.svelte';
+	import Switch from './ui/switch/switch.svelte';
+	import Label from './ui/label/label.svelte';
+	import { Github } from 'lucide-svelte';
 
 	let mode: string | undefined;
 </script>
 
-<Menubar.Root>
+<Menubar.Root class="flex w-full flex-row rounded-none border-0 border-b">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
@@ -26,6 +29,9 @@
 				<Menubar.Shortcut>⌘V</Menubar.Shortcut>
 			</Menubar.Item>
 			<Menubar.Separator />
+			<Menubar.Item href="https://github.com/BramLeisink/visual-panorama-maker"
+				><Github class="w-4 h-4 mr-2" /> Github</Menubar.Item
+			>
 		</Menubar.Content>
 	</Menubar.Menu>
 	<Menubar.Menu>
@@ -37,19 +43,6 @@
 			<Menubar.Item>
 				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
 			</Menubar.Item>
-		</Menubar.Content>
-	</Menubar.Menu>
-	<Menubar.Menu>
-		<Menubar.Trigger>View</Menubar.Trigger>
-		<Menubar.Content>
-			<MenubarLabel>Panorama settings</MenubarLabel>
-			<Menubar.CheckboxItem bind:checked={$viewerSettings.compass}
-				>Show compass</Menubar.CheckboxItem
-			>
-			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate}>Rotate</Menubar.CheckboxItem>
-			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}
-				>Look at selected Hotspot</Menubar.CheckboxItem
-			>
 			<Menubar.Separator />
 			<Menubar.Sub>
 				<Menubar.SubTrigger>Precision</Menubar.SubTrigger>
@@ -62,6 +55,21 @@
 					</Menubar.RadioGroup>
 				</Menubar.SubContent>
 			</Menubar.Sub>
+		</Menubar.Content>
+	</Menubar.Menu>
+	<Menubar.Menu>
+		<Menubar.Trigger>View</Menubar.Trigger>
+		<Menubar.Content>
+			<MenubarLabel>Panorama settings</MenubarLabel>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.compass}
+				>Show compass</Menubar.CheckboxItem
+			>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate}>Rotate</Menubar.CheckboxItem>
+			<Menubar.Separator />
+			<MenubarLabel>Developer mode</MenubarLabel>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}
+				>Look at selected HotSpot</Menubar.CheckboxItem
+			>
 
 			<Menubar.Separator />
 			<Menubar.Sub>
@@ -87,11 +95,16 @@
 								resetMode();
 								mode = 'system';
 							}}
-							value={undefined}>System</Menubar.RadioItem
+							value="">System</Menubar.RadioItem
 						>
 					</Menubar.RadioGroup>
 				</Menubar.SubContent>
 			</Menubar.Sub>
 		</Menubar.Content>
 	</Menubar.Menu>
+	<div class="flex-1"></div>
+	<div class="flex items-center space-x-2 px-2">
+		<Label for="devMode">Development Mode</Label>
+		<Switch id="devMode" bind:checked={$viewerSettings.developmentMode} />
+	</div>
 </Menubar.Root>
