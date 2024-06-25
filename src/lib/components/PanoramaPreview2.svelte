@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { get } from 'svelte/store';
 	import {
 		selectedFile,
 		hotSpotsList,
@@ -21,10 +22,12 @@
 		ChevronUp,
 		ZoomIn,
 		ZoomOut,
-		RefreshCcw
+		RefreshCcw,
+		Orbit
 	} from 'lucide-svelte';
 
 	import Button from './ui/button/button.svelte';
+	import { cn } from '$lib/utils';
 
 	let panoElement: any;
 
@@ -119,10 +122,19 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 </svelte:head>
 
-<div class="flex h-full cursor-crosshair">
-	<div bind:this={panoElement} id="panorama"></div>
-	<div id="controls" class="z-2 absolute flex flex-col gap-1 p-2">
-		<!-- <Button variant="outline" size="icon" on:click={panLeft}><ChevronLeft class="h-4 w-4" /></Button
+<div class="h-full w-full">
+	<div
+		class={cn(
+			'flex h-full w-full',
+			$pannellumViewer && $pannellumViewer.getScene() && Object.keys($scenes).length != 0
+				? ''
+				: 'hidden'
+		)}
+	>
+		<div bind:this={panoElement} id="panorama" />
+		<!-- {#if $pannellumViewer} -->
+		<div id="controls" class="z-2 absolute flex flex-col gap-1 p-2">
+			<!-- <Button variant="outline" size="icon" on:click={panLeft}><ChevronLeft class="h-4 w-4" /></Button
 		>
 		<Button variant="outline" size="icon" on:click={panRight}
 			><ChevronRight class="h-4 w-4" /></Button
@@ -130,19 +142,34 @@
 		<Button variant="outline" size="icon" on:click={panUp}><ChevronUp class="h-4 w-4" /></Button>
 		<Button variant="outline" size="icon" on:click={panDown}><ChevronDown class="h-4 w-4" /></Button
 		> -->
-		<div class="flex flex-col">
-			<Button variant="outline" size="icon" class="rounded-b-none" on:click={zoomIn}
-				><ZoomIn class="h-4 w-4" /></Button
+			<div class="flex flex-col">
+				<Button variant="outline" size="icon" class="rounded-b-none" on:click={zoomIn}
+					><ZoomIn class="h-4 w-4" /></Button
+				>
+				<Button variant="outline" size="icon" class="rounded-t-none" on:click={zoomOut}
+					><ZoomOut class="h-4 w-4" /></Button
+				>
+			</div>
+			<Button variant="outline" size="icon" on:click={toggleFullscreen}
+				><Maximize class="h-4 w-4" /></Button
 			>
-			<Button variant="outline" size="icon" class="rounded-t-none" on:click={zoomOut}
-				><ZoomOut class="h-4 w-4" /></Button
+			<Button variant="outline" size="icon" on:click={reload}><RefreshCcw class="h-4 w-4" /></Button
 			>
 		</div>
-		<Button variant="outline" size="icon" on:click={toggleFullscreen}
-			><Maximize class="h-4 w-4" /></Button
-		>
-		<Button variant="outline" size="icon" on:click={reload}><RefreshCcw class="h-4 w-4" /></Button>
 	</div>
+	{#if !$pannellumViewer || !$pannellumViewer.getScene() || Object.keys($scenes).length == 0}
+		<div class="h-full w-full p-8">
+			<div
+				class="flex h-full w-full items-center justify-center rounded-2xl border border-2 border-dashed text-center"
+			>
+				<div class="flex flex-col items-center justify-center">
+					<Orbit class="mb-2 h-10 w-10 text-accent" />
+					<h2 class="text-xl font-bold">Panorama Preview</h2>
+					<p class="text-muted-foreground">There are no scenes in your project.</p>
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Select from '$lib/components/ui/select/index';
 	import { pannellumSetup, selectedScene, scenes } from '$lib/storedInfo';
 	import { PackagePlus } from 'lucide-svelte';
 	import AddSceneDialog from './AddSceneDialog.svelte';
@@ -18,7 +18,7 @@
 			$selectedScene = firstSceneKey;
 		} else {
 			selected = {
-				label: $scenes[$selectedScene].title,
+				label: $scenes[$selectedScene].title || $selectedScene,
 				value: $selectedScene
 			};
 		}
@@ -40,7 +40,7 @@
 		<Select.Group>
 			<Select.Label>Scenes</Select.Label>
 			{#each Object.entries($scenes) as [key, scene]}
-				<Select.Item value={key} label={scene.title}>{scene.title}</Select.Item>
+				<Select.Item value={key} label={scene.title || key}>{scene.title || key}</Select.Item>
 			{/each}
 		</Select.Group>
 		<AddSceneDialog class="w-full"

@@ -97,8 +97,9 @@ export function removeHotSpot(id: string, sceneId: string) {
 }
 
 export function removeScene(id: string) {
+	let newSelectedScene = '';
 	if (id === get(selectedScene) || id === get(pannellumViewer).getScene()) {
-		const newSelectedScene = Object.keys(get(scenes)).find((sceneId) => sceneId !== id) || '';
+		newSelectedScene = Object.keys(get(scenes)).find((sceneId) => sceneId !== id) || '';
 		selectedScene.set(newSelectedScene);
 		get(pannellumViewer).loadScene(newSelectedScene);
 	}
@@ -120,6 +121,7 @@ export function removeScene(id: string) {
 				throw new Error(`Failed to remove scene '${id}'.`);
 			}
 		}
+		selectedScene.set(newSelectedScene);
 	}, 100);
 }
 
@@ -134,6 +136,7 @@ export function addScene(sceneId: string, sceneConfig: Scene) {
 	} else {
 		if (get(pannellumViewer).addScene(sceneId, sceneConfig)) {
 			scenes.set(get(scenes));
+			selectedScene.set(sceneId);
 			return true;
 		} else {
 			throw new Error('Something went wrong. Please try again');
@@ -141,7 +144,15 @@ export function addScene(sceneId: string, sceneConfig: Scene) {
 	}
 }
 
-export function editHotSpot(hotSpotConfig: HotSpot, sceneId: string) {
+export function editHotSpot(
+	hotSpotConfig: HotSpot,
+	sceneId: string,
+	oldHotSpotConfig?: HotSpot,
+	oldSceneId?: string
+) {
+	oldSceneId = oldSceneId || sceneId;
+	oldHotSpotConfig = oldHotSpotConfig || hotSpotConfig;
+
 	const isValidId = /^[a-zA-Z0-9_-]+$/.test(hotSpotConfig.id);
 
 	hotSpotConfig.yaw = round(hotSpotConfig.yaw);
@@ -149,24 +160,18 @@ export function editHotSpot(hotSpotConfig: HotSpot, sceneId: string) {
 
 	if (!isValidId) {
 		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
-	} else if (!isUniqueId(hotSpotConfig.id)) {
-		throw new Error('ID must be unique. This ID is already in use.');
 	} else {
-		let indexToRemove = get(scenes)[sceneId].hotSpots.findIndex(
-			(hotSpot) => hotSpot.id === hotSpotConfig.id
-		);
-
-		if (indexToRemove !== -1) {
-			if (get(pannellumViewer).removeHotSpot(hotSpotConfig.id, sceneId)) {
-				if (get(pannellumViewer).addHotSpot(hotSpotConfig, sceneId)) {
-					scenes.set(get(scenes));
-					return true;
-				} else {
-					throw new Error('Something went wrong. Please try again');
-				}
+		if (get(pannellumViewer).removeHotSpot(oldHotSpotConfig.id, oldSceneId)) {
+			if (get(pannellumViewer).addHotSpot(hotSpotConfig, sceneId)) {
+				selectedScene.set(sceneId);
+				selectedHotSpot.set(hotSpotConfig.id);
+				scenes.set(get(scenes));
+				return true;
 			} else {
 				throw new Error('Something went wrong. Please try again');
 			}
+		} else {
+			throw new Error('Something went wrong. Please try again');
 		}
 	}
 }

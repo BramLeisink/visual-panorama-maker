@@ -5,10 +5,12 @@ export interface HotSpot {
 	type: string;
 	text?: string;
 	URL?: string;
+	attributes?: { [key: string]: any };
 	cssClass?: string;
 	sceneId?: string;
 	targetYaw?: number;
 	targetPitch?: number;
+	targetHfov?: number;
 	scale?: boolean;
 }
 

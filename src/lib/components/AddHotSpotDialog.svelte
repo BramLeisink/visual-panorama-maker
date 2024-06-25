@@ -29,7 +29,7 @@
 	let position: { yaw: number; pitch: number };
 	let yaw = 0;
 	let pitch = 0;
-	let selected = { label: $scenes[$selectedScene].title, value: $selectedScene };
+	let selected = { label: $scenes[$selectedScene].title || $selectedScene, value: $selectedScene };
 	let scene = $selectedScene;
 	let id = 'MyHotSpot';
 	let description = '';
@@ -37,7 +37,7 @@
 	let dialogOpen = false;
 
 	function updateToNewValues() {
-		selected = { label: $scenes[$selectedScene].title, value: $selectedScene };
+		selected = { label: $scenes[$selectedScene].title || $selectedScene, value: $selectedScene };
 		scene = $selectedScene;
 
 		position = currentYawPitch();

@@ -82,3 +82,9 @@ export const hotSpotsInSelectedScene = derived(
 		return scene ? scene.hotSpots : [];
 	}
 );
+
+export const hotSpotTypes = {
+	scene: 'Scene',
+	info: 'Info',
+	custom: 'Custom'
+};

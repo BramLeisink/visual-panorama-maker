@@ -9,11 +9,12 @@
 	import MenubarLabel from './ui/menubar/menubar-label.svelte';
 	import Switch from './ui/switch/switch.svelte';
 	import Label from './ui/label/label.svelte';
+	import { Github } from 'lucide-svelte';
 
 	let mode: string | undefined;
 </script>
 
-<Menubar.Root class="flex w-full flex-row">
+<Menubar.Root class="flex w-full flex-row rounded-none border-0 border-b">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
@@ -28,6 +29,9 @@
 				<Menubar.Shortcut>⌘V</Menubar.Shortcut>
 			</Menubar.Item>
 			<Menubar.Separator />
+			<Menubar.Item href="https://github.com/BramLeisink/visual-panorama-maker"
+				><Github class="w-4 h-4 mr-2" /> Github</Menubar.Item
+			>
 		</Menubar.Content>
 	</Menubar.Menu>
 	<Menubar.Menu>
@@ -39,6 +43,18 @@
 			<Menubar.Item>
 				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
 			</Menubar.Item>
+			<Menubar.Separator />
+			<Menubar.Sub>
+				<Menubar.SubTrigger>Precision</Menubar.SubTrigger>
+				<Menubar.SubContent>
+					<Menubar.RadioGroup bind:value={$viewerSettings.precision}>
+						<Menubar.RadioItem value="0">0</Menubar.RadioItem>
+						<Menubar.RadioItem value="1">1</Menubar.RadioItem>
+						<Menubar.RadioItem value="2">2</Menubar.RadioItem>
+						<Menubar.RadioItem value="3">3</Menubar.RadioItem>
+					</Menubar.RadioGroup>
+				</Menubar.SubContent>
+			</Menubar.Sub>
 		</Menubar.Content>
 	</Menubar.Menu>
 	<Menubar.Menu>
@@ -54,18 +70,6 @@
 			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}
 				>Look at selected HotSpot</Menubar.CheckboxItem
 			>
-			<Menubar.Separator />
-			<Menubar.Sub>
-				<Menubar.SubTrigger>Precision</Menubar.SubTrigger>
-				<Menubar.SubContent>
-					<Menubar.RadioGroup bind:value={$viewerSettings.precision}>
-						<Menubar.RadioItem value="0">0</Menubar.RadioItem>
-						<Menubar.RadioItem value="1">1</Menubar.RadioItem>
-						<Menubar.RadioItem value="2">2</Menubar.RadioItem>
-						<Menubar.RadioItem value="3">3</Menubar.RadioItem>
-					</Menubar.RadioGroup>
-				</Menubar.SubContent>
-			</Menubar.Sub>
 
 			<Menubar.Separator />
 			<Menubar.Sub>
