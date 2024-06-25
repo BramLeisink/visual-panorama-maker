@@ -1,6 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { HotSpot, PannellumSetup, Scene } from '$lib/types';
-
+import type { HotSpot, PannellumSettings, PannellumSetup, Scene } from '$lib/types';
 export const pannellumViewer = writable<any>();
 
 export const selectedFile = writable(null);
@@ -21,7 +20,7 @@ export const viewerSettings = writable({
 });
 
 export const clickedLocation = writable({ yaw: undefined, pitch: undefined });
-export const initialConfig = writable({
+export const initialConfig = writable<PannellumSettings>({
 	firstScene: 'circle',
 	autoLoad: true,
 	sceneFadeDuration: 1000,

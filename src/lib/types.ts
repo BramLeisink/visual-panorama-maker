@@ -32,6 +32,7 @@ export interface PannellumSettings {
 	sceneFadeDuration?: number;
 	autoLoad?: boolean;
 	showControls?: boolean;
+	compass?: boolean;
 }
 
 export interface PannellumSetup {

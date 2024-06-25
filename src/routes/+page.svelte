@@ -1,65 +1,17 @@
-<script lang="ts">
-	import EditHotSpot2 from '$lib/components/EditHotSpot2.svelte';
-	import HotSpotsList from '$lib/components/HotSpotsList.svelte';
-	import PanoramaPreview2 from '$lib/components/PanoramaPreview2.svelte';
-	import SceneSelector from '$lib/components/SceneSelector.svelte';
-	import SceneList from '$lib/components/SceneList.svelte';
-	import StatisticsAndExport from '$lib/components/StatisticsAndExport.svelte';
-	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-
-	import { pannellumSetup, selectedHotSpot, viewerSettings } from '$lib/storedInfo';
-
-	type PanoramaData = {
-		yaw: number;
-		pitch: number;
-	};
-
-	type SceneData = {
-		imageSrc: string;
-	};
-	let panoramaData: PanoramaData = { yaw: 0, pitch: 0 };
-	let sceneData: SceneData[] = [];
-	function handlePanoramaDataUpdate(event: CustomEvent<PanoramaData>) {
-		panoramaData = event.detail;
-	}
-
-	function handleScenes(event: CustomEvent<SceneData>) {
-		sceneData = [...sceneData, event.detail];
-	}
+<script>
+	import Cta from '$lib/components/homepage/Cta.svelte';
+	import Faq from '$lib/components/homepage/FAQ.svelte';
+	import Features from '$lib/components/homepage/Features.svelte';
+	import Footer from '$lib/components/homepage/Footer.svelte';
+	import Hero from '$lib/components/homepage/Hero.svelte';
+	import HowItWorks from '$lib/components/homepage/HowItWorks.svelte';
+	import Navbar from '$lib/components/homepage/Navbar.svelte';
 </script>
 
-<Resizable.PaneGroup direction="horizontal" class="h-full w-full">
-	<Resizable.Pane defaultSize={25} class="">
-		<Resizable.PaneGroup direction="vertical">
-			<div class="p-2">
-				<SceneSelector />
-			</div>
-			<Separator />
-			<Resizable.Pane defaultSize={75} class="p-2">
-				<HotSpotsList />
-			</Resizable.Pane>
-			<Resizable.Handle withHandle />
-			<Resizable.Pane class="p-2">
-				<SceneList />
-			</Resizable.Pane>
-		</Resizable.PaneGroup>
-	</Resizable.Pane>
-	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={50}>
-		<Resizable.PaneGroup direction="vertical">
-			<div class="flex flex-col gap-2 overflow-y-auto p-2">
-				<EditHotSpot2 />
-				<StatisticsAndExport />
-			</div>
-		</Resizable.PaneGroup>
-	</Resizable.Pane>
-	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={50} onResize={(size) => ($viewerSettings.panoramaPaneSize = size)}>
-		<Resizable.PaneGroup direction="vertical">
-			<Resizable.Pane defaultSize={75}>
-				<PanoramaPreview2 />
-			</Resizable.Pane>
-		</Resizable.PaneGroup>
-	</Resizable.Pane>
-</Resizable.PaneGroup>
+<Navbar />
+<Hero />
+<HowItWorks />
+<Features />
+<Cta />
+<Faq />
+<Footer />
