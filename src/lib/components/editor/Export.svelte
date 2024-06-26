@@ -15,6 +15,7 @@
 	import { copyText } from 'svelte-copy';
 	import { twi } from 'tw-to-css';
 	import { FileCode, FileJson, TriangleAlert } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
 
 	const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 
@@ -72,6 +73,50 @@
 		// Return the modified pannellumCopy object as a JSON string
 		return JSON.stringify(pannellumCopy, null, '\t');
 	});
+
+	function downloadFile(content: string, filename: string, type: string) {
+		const blob = new Blob([content], { type });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = filename;
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(() => {
+			document.body.removeChild(a);
+			window.URL.revokeObjectURL(url);
+		}, 0);
+	}
+
+	function downloadJsonConfig() {
+		if (keepTailwind) {
+			downloadFile($jsonConfigWithTailwind, 'pannellum.config.json', 'application/json');
+		} else {
+			downloadFile($jsonConfigWithoutTailwind, 'pannellum.config.json', 'application/json');
+		}
+	}
+
+	function downloadCssFile() {
+		downloadFile(cssFile, 'pannellum-hotspots.css', 'text/css');
+	}
+
+	function copyJsonConfig() {
+		if (keepTailwind) {
+			copyText($jsonConfigWithTailwind).then(() => {
+				toast.info('JSON configuration copied to clipboard');
+			});
+		} else {
+			copyText($jsonConfigWithoutTailwind).then(() => {
+				toast.info('JSON configuration copied to clipboard');
+			});
+		}
+	}
+
+	function copyCssFile() {
+		copyText(cssFile).then(() => {
+			toast.info('CSS file copied to clipboard');
+		});
+	}
 </script>
 
 <svelte:head>
@@ -97,6 +142,10 @@
 				placeholder="Begin by setting up your first scene"
 				value={$jsonConfigWithoutTailwind}
 			/>
+			<div class="flex flex-wrap gap-2">
+				<Button on:click={downloadJsonConfig}>Download</Button>
+				<Button variant="secondary" on:click={copyJsonConfig}>Copy</Button>
+			</div>
 			<h3 class="text-lg font-bold">
 				<FileCode class="mr-1 inline h-4 w-4" />
 				pannellum-hotspots.css <Badge variant="default" class="ml-2"
@@ -104,6 +153,10 @@
 				>
 			</h3>
 			<Textarea placeholder="You dont have any custom hotspots." value={cssFile} />
+			<div class="flex flex-wrap gap-2">
+				<Button disabled={!cssFile} on:click={downloadCssFile}>Download</Button>
+				<Button disabled={!cssFile} variant="secondary" on:click={copyCssFile}>Copy</Button>
+			</div>
 		{:else}
 			<h3 class="text-lg font-bold">
 				<FileJson class="mr-1 inline h-4 w-4" /> pannellum.config.json
@@ -112,18 +165,10 @@
 				placeholder="Begin by setting up your first scene"
 				value={$jsonConfigWithTailwind}
 			/>
+			<div class="flex flex-wrap gap-2">
+				<Button on:click={downloadJsonConfig}>Download</Button>
+				<Button variant="secondary" on:click={copyJsonConfig}>Copy</Button>
+			</div>
 		{/if}
 	</Card.Content>
-	<!-- <Card.Footer>
-				<div class="flex flex-wrap gap-2">
-					<Button>Download</Button>
-					<Button
-						variant="secondary"
-						on:click={() => {
-							copyText(jsonConfigWithTailwind);
-						}}
-						on:svelte-copy={(event) => alert(event.detail)}>Copy</Button
-					>
-				</div>
-			</Card.Footer> -->
 </Card.Root>

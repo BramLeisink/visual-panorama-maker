@@ -44,27 +44,20 @@
 	let dialogOpen = false;
 
 	function addSceneToPanorama() {
-		try {
-			if (!image) {
-				throw new Error('No image selected');
-			}
-			let scene = {
-				title: title,
-				type: 'equirectangular',
-				panorama: URL.createObjectURL(image),
-				hotSpots: []
-			};
-			addScene(id, scene);
+		if (!image) {
+			throw new Error('No image selected');
+		}
+		let scene = {
+			title: title,
+			type: 'equirectangular',
+			panorama: URL.createObjectURL(image),
+			hotSpots: []
+		};
+		if (addScene(id, scene)) {
 			dialogOpen = false;
 			toast.success(`'${id}' succesfully added.`);
 			selectedScene.set(id);
 			selectedHotSpot.set($scenes[id].hotSpots[0]?.id || '');
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
 		}
 	}
 

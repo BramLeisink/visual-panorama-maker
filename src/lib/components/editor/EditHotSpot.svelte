@@ -54,35 +54,20 @@
 	let locationPickerOn = false;
 
 	function saveChanges() {
-		try {
-			editHotSpot(
-				hotSpotSettings,
-				scene.value,
-				$scenes[$selectedScene].hotSpots[
-					$scenes[$selectedScene].hotSpots.findIndex((hotSpot) => hotSpot.id === $selectedHotSpot)
-				],
-				$selectedScene
-			);
-			toast.success(`'${$selectedHotSpot}' succesfully saved.`);
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
-		}
+		editHotSpot(
+			hotSpotSettings,
+			scene.value,
+			$scenes[$selectedScene].hotSpots[
+				$scenes[$selectedScene].hotSpots.findIndex((hotSpot) => hotSpot.id === $selectedHotSpot)
+			],
+			$selectedScene
+		);
+		toast.success(`'${$selectedHotSpot}' succesfully saved.`);
 	}
 
 	function removeHotSpotFromScene() {
-		try {
-			removeHotSpot($selectedHotSpot, $selectedScene);
+		if (removeHotSpot($selectedHotSpot, $selectedScene)) {
 			toast.success(`'${$selectedHotSpot}' succesfully removed from scene.`);
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
 		}
 	}
 

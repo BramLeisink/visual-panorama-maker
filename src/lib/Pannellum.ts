@@ -1,5 +1,6 @@
 import { writable, derived, get } from 'svelte/store';
 import type { HotSpot, Scene } from '$lib/types';
+import { Warn } from './utils';
 
 import {
 	pannellumViewer,
@@ -74,30 +75,31 @@ export function addHotSpot(hotSpotConfig: HotSpot, sceneId: string) {
 	hotSpotConfig.pitch = round(hotSpotConfig.pitch);
 
 	if (!isValidId) {
-		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
+		Warn('ID must only contain letters, numbers, hyphens, and underscores.');
+		return false;
 	} else if (!isUniqueId(hotSpotConfig.id)) {
-		throw new Error('ID must be unique. This ID is already in use.');
+		Warn('ID must be unique. This ID is already in use.');
+		return false;
 	} else {
 		if (get(pannellumViewer).addHotSpot(hotSpotConfig, sceneId)) {
 			scenes.set(get(scenes));
 			return true;
 		} else {
-			throw new Error('Something went wrong. Please try again');
+			throw new Error(`Failed to add hotspot '${hotSpotConfig.id}'.`);
 		}
 	}
 }
 
 export function removeHotSpot(id: string, sceneId: string) {
-	let indexToRemove = get(scenes)[sceneId].hotSpots.findIndex((hotSpot) => hotSpot.id === id);
+	if (get(pannellumViewer).removeHotSpot(id, sceneId)) {
+		scenes.set(get(scenes));
 
-	if (indexToRemove !== -1) {
-		if (get(pannellumViewer).removeHotSpot(id, sceneId)) {
-			scenes.set(get(scenes));
-
-			if (get(selectedHotSpot) === id) {
-				selectedHotSpot.set('');
-			}
+		if (get(selectedHotSpot) === id) {
+			selectedHotSpot.set('');
 		}
+		return true;
+	} else {
+		throw new Error(`Failed to remove hotspot '${id}'.`);
 	}
 }
 
@@ -118,7 +120,8 @@ export function editHotSpot(
 	hotSpotConfig.pitch = round(hotSpotConfig.pitch);
 
 	if (!isValidId) {
-		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
+		Warn('ID must only contain letters, numbers, hyphens, and underscores.');
+		return false;
 	} else {
 		console.log(hotSpotConfig);
 		console.log(oldSceneId);
@@ -129,10 +132,10 @@ export function editHotSpot(
 				scenes.set(get(scenes));
 				return true;
 			} else {
-				throw new Error('Something went wrong. Please try again1');
+				throw new Error(`Failed to add hotspot '${hotSpotConfig.id}'.`);
 			}
 		} else {
-			throw new Error('Something went wrong. Please try again');
+			throw new Error(`Failed to remove hotspot '${hotSpotConfig.id}'.`);
 		}
 	}
 }
@@ -143,16 +146,18 @@ export function addScene(sceneId: string, sceneConfig: Scene) {
 	const isUniqueId = !get(scenes).hasOwnProperty(sceneId);
 
 	if (!isValidId) {
-		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
+		Warn('ID must only contain letters, numbers, hyphens, and underscores.');
+		return false;
 	} else if (!isUniqueId) {
-		throw new Error('ID must be unique. This ID is already in use.');
+		Warn('ID must be unique. This ID is already in use.');
+		return false;
 	} else {
 		if (get(pannellumViewer).addScene(sceneId, sceneConfig)) {
 			scenes.set(get(scenes));
 			selectedScene.set(sceneId);
 			return true;
 		} else {
-			throw new Error('Something went wrong. Please try again');
+			throw new Error(`Failed to add scene '${sceneId}'.`);
 		}
 	}
 }
@@ -178,10 +183,12 @@ export function removeScene(id: string, skipChecks = false) {
 
 			if (get(pannellumViewer).removeScene(id)) {
 				scenes.set(get(scenes));
+				return true;
 			} else {
 				throw new Error(`Failed to remove scene '${id}'.`);
 			}
 		}
 		selectedScene.set(newSelectedScene);
 	}, 100);
+	return false;
 }

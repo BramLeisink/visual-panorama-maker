@@ -17,25 +17,11 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { Button } from '$lib/components/ui/button/index';
 	import AddSceneDialog from '$lib/components/editor/AddSceneDialog.svelte';
-	import { Trash2, PackagePlus, Package, Variable, Badge } from 'lucide-svelte';
+	import { Trash2, PackagePlus, Package, Variable, Badge, Delete } from 'lucide-svelte';
 	import EditScenes from './EditScene.svelte';
 	import TextTooltip from '../TextTooltip.svelte';
 	import { text } from '@sveltejs/kit';
-
-	function removeSceneFromPanorama(id: string) {
-		try {
-			let sceneTitle = $scenes[id].title;
-			removeScene(id);
-			toast.success(`'${sceneTitle || id}' succesfully removed.`);
-			console.log($scenes);
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
-		}
-	}
+	import DeleteScene from './DeleteScene.svelte';
 </script>
 
 <div class="flex-spread flex h-full w-full flex-col justify-between p-1">
@@ -53,14 +39,15 @@
 						<Badge class="ml-2 h-4 w-4 fill-primary stroke-none" />
 					{/if}
 					<div class="flex-1" />
-					<Button
-						variant="destructive"
-						size="icon"
-						class="h-6 w-6 opacity-0 group-hover:opacity-100"
-						on:click={() => removeSceneFromPanorama(key)}
-					>
-						<Trash2 class="h-4 w-4" />
-					</Button>
+					<DeleteScene sceneId={key} class="z-10">
+						<Button
+							variant="destructive"
+							size="icon"
+							class="h-6 w-6 opacity-0 group-hover:opacity-100"
+						>
+							<Trash2 class="h-4 w-4" />
+						</Button>
+					</DeleteScene>
 				</Button>
 			{/each}
 		</div>

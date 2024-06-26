@@ -3,6 +3,12 @@ import { twMerge } from 'tailwind-merge';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
 
+import { toast } from 'svelte-sonner';
+
+export function Warn(message: string) {
+	toast.warning(message);
+}
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }

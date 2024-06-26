@@ -8,7 +8,7 @@
 
 	onMount(() => {
 		const report_error = (msg: string = 'unknown error') => {
-			toast.error(msg);
+			toast.error(msg, { action: { label: 'report', onClick: () => console.log('Undo') } });
 		};
 
 		const handle_rejection = (e: PromiseRejectionEvent) => {
@@ -33,7 +33,7 @@
 	});
 </script>
 
-<Toaster richColors theme={$mode} closeButton />
+<Toaster richColors theme={$mode} />
 <ModeWatcher />
 
 <slot />

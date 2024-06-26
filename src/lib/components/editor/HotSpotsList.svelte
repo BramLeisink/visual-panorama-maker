@@ -19,15 +19,8 @@
 	import { CircleArrowUp, CircleHelp, CirclePlus, Info, Trash2 } from 'lucide-svelte';
 
 	function removeHotSpotFromScene(hotSpotId: string) {
-		try {
-			removeHotSpot(hotSpotId, $selectedScene);
+		if (removeHotSpot(hotSpotId, $selectedScene)) {
 			toast.success(`'${hotSpotId}' succesfully removed from scene.`);
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
 		}
 	}
 </script>

@@ -47,18 +47,11 @@
 
 	function addHotSpotToScene() {
 		let hotSpot: HotSpot = { id: id, yaw: yaw, pitch: pitch, type: 'info', text: description };
-		try {
-			addHotSpot(hotSpot, scene);
+		if (addHotSpot(hotSpot, scene)) {
 			dialogOpen = false;
 			toast.success(`'${id}' succesfully added to scene.`);
 			$selectedScene = scene;
 			$selectedHotSpot = id;
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
 		}
 	}
 </script>
