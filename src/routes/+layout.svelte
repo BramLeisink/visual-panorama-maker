@@ -3,6 +3,7 @@
 	import { ModeWatcher, mode } from 'mode-watcher';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { toast } from 'svelte-sonner';
+	import { inject } from '@vercel/analytics';
 
 	import { onMount } from 'svelte';
 

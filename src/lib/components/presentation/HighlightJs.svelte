@@ -7,8 +7,9 @@
 	import Notes from 'reveal.js/plugin/notes/notes';
 
 	import 'reveal.js/dist/reveal.css';
-	import 'reveal.js/dist/theme/black.css';
-	import 'reveal.js/plugin/highlight/monokai.css';
+	// import 'reveal.js/dist/theme/black.css'
+	import './presentation.css';
+	// import 'reveal.js/plugin/highlight/monokai.css'
 
 	import Presentation from './Presentation.svelte';
 
@@ -18,6 +19,7 @@
 			autoAnimateEasing: 'ease',
 			autoAnimateDuration: 1,
 			hash: true,
+			loop: true
 			// controls: false,
 			// progress: false
 		});
