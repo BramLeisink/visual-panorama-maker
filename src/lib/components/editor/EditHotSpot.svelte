@@ -27,7 +27,7 @@
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import AddSceneDialog from '$lib/components/editor/AddSceneDialog.svelte';
-	import { PackagePlus } from 'lucide-svelte';
+	import { PackagePlus, Locate } from 'lucide-svelte';
 	import { Content } from '$lib/components/ui/dialog';
 
 	let scene: { label: string | undefined; value: string } = { label: '', value: '' };
@@ -49,6 +49,8 @@
 	}
 
 	let hotSpotSettings: HotSpot;
+
+	let locationPickerOn = false;
 
 	function saveChanges() {
 		try {
@@ -90,7 +92,19 @@
 					$scenes[$selectedScene].hotSpots.findIndex((hotSpot) => hotSpot.id === $selectedHotSpot)
 				];
 		});
+
+		clickedLocation.subscribe((value) => {
+			locationPicker(value);
+		});
 	});
+
+	function locationPicker(location: { yaw: number; pitch: number }) {
+		if (locationPickerOn && location.yaw && location.pitch) {
+			hotSpotSettings.yaw = Number(location.yaw);
+			hotSpotSettings.pitch = Number(location.pitch);
+			locationPickerOn = false;
+		}
+	}
 </script>
 
 {#if $selectedHotSpot}
@@ -122,9 +136,13 @@
 							<Label for="pitch">Pitch</Label>
 							<Input id="pitch" bind:value={hotSpotSettings.pitch} type="number" />
 						</div>
-						<!-- <Toggle variant="outline" aria-label="Toggle location picker" bind:pressed={locationPickerOn}>
+						<Toggle
+							variant="outline"
+							aria-label="Toggle location picker"
+							bind:pressed={locationPickerOn}
+						>
 							<Locate class="h-4 w-4" />
-						</Toggle> -->
+						</Toggle>
 					</div>
 					<div class="space-y-1">
 						<Label for="scene">Scene</Label>
@@ -238,13 +256,16 @@
 								<Label for="url">URL</Label>
 								<Input id="url" bind:value={hotSpotSettings.URL} />
 							</div>
-						{:else}
+						{:else if hotSpotSettings.type == 'scene'}
 							<Label for="targetScene">Target Scene</Label>
 
 							<Select.Root
 								selected={{
-									value: hotSpotSettings.sceneId,
-									label: $scenes[hotSpotSettings.sceneId].title || ''
+									value: hotSpotSettings.sceneId || $selectedScene,
+									label:
+										$scenes[hotSpotSettings.sceneId || $selectedScene]?.title ||
+										hotSpotSettings.sceneId ||
+										$selectedScene
 								}}
 								onSelectedChange={(s) => {
 									s && (hotSpotSettings.sceneId = s.value);

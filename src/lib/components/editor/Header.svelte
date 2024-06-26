@@ -50,10 +50,12 @@
 		<Menubar.Trigger>View</Menubar.Trigger>
 		<Menubar.Content>
 			<MenubarLabel>Panorama settings</MenubarLabel>
-			<Menubar.CheckboxItem bind:checked={$viewerSettings.compass}
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.compass} disabled
 				>Show compass</Menubar.CheckboxItem
 			>
-			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate}>Rotate</Menubar.CheckboxItem>
+			<Menubar.CheckboxItem bind:checked={$viewerSettings.autoRotate} disabled
+				>Rotate</Menubar.CheckboxItem
+			>
 			<Menubar.Separator />
 			<MenubarLabel>Developer mode</MenubarLabel>
 			<Menubar.CheckboxItem bind:checked={$viewerSettings.lookAtSelected}

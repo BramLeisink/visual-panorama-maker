@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MultipleScenes from '../homepage/features/MultipleScenes.svelte';
 	import Slide from './Slide.svelte';
 </script>
 
@@ -7,6 +8,11 @@
 <Slide>
 	<Slide>Vertical Slide 1</Slide>
 	<Slide>Vertical Slide 2</Slide>
+</Slide>
+
+<Slide>
+	<h1>Test</h1>
+	<p>wow</p>
 </Slide>
 
 <Slide animate>

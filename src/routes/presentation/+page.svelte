@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Slides from '$lib/components/presentation/HighlightJs.svelte';
+	import HighlightJs from '$lib/components/presentation/HighlightJs.svelte';
 	import '../../app.css';
 </script>
 
@@ -7,4 +7,4 @@
 	<title>Presentation</title>
 </svelte:head>
 
-<Slides />
+<HighlightJs />

@@ -39,7 +39,7 @@
 				<h3 class="text-lg font-semibold">HotSpots</h3>
 				{#each $hotSpotsInSelectedScene as hotSpot}
 					<Button
-						class="group flex"
+						class="group flex h-auto min-h-10"
 						variant={$selectedHotSpot === hotSpot.id ? 'secondary' : 'outline'}
 						on:click={() => ($selectedHotSpot = hotSpot.id)}
 					>
