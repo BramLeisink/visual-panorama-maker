@@ -66,6 +66,7 @@ export function currentYawPitch(): { yaw: number; pitch: number } {
 	return { yaw: yaw, pitch: pitch };
 }
 
+// HOTSPOTS
 export function addHotSpot(hotSpotConfig: HotSpot, sceneId: string) {
 	const isValidId = /^[a-zA-Z0-9_-]+$/.test(hotSpotConfig.id);
 
@@ -100,35 +101,43 @@ export function removeHotSpot(id: string, sceneId: string) {
 	}
 }
 
-export function removeScene(id: string) {
-	let newSelectedScene = '';
-	if (id === get(selectedScene) || id === get(pannellumViewer).getScene()) {
-		newSelectedScene = Object.keys(get(scenes)).find((sceneId) => sceneId !== id) || '';
-		selectedScene.set(newSelectedScene);
-		get(pannellumViewer).loadScene(newSelectedScene);
-	}
+export function editHotSpot(
+	hotSpotConfig: HotSpot,
+	sceneId: string,
+	oldHotSpotConfig?: HotSpot,
+	oldSceneId?: string
+) {
+	oldSceneId = oldSceneId || sceneId;
+	oldHotSpotConfig = oldHotSpotConfig || hotSpotConfig;
 
-	if (id === get(pannellumSetup).firstScene) {
-		initialConfig.update((value) => {
-			value.firstScene = get(selectedScene) || '';
-			return value;
-		});
-	}
+	console.log(oldSceneId, sceneId);
 
-	const checkSceneInterval = setInterval(() => {
-		if (get(pannellumViewer).getScene() !== id) {
-			clearInterval(checkSceneInterval);
+	const isValidId = /^[a-zA-Z0-9_-]+$/.test(hotSpotConfig.id);
 
-			if (get(pannellumViewer).removeScene(id)) {
+	hotSpotConfig.yaw = round(hotSpotConfig.yaw);
+	hotSpotConfig.pitch = round(hotSpotConfig.pitch);
+
+	if (!isValidId) {
+		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
+	} else {
+		console.log(hotSpotConfig);
+		console.log(oldSceneId);
+		if (get(pannellumViewer).removeHotSpot(hotSpotConfig.id, oldSceneId)) {
+			if (get(pannellumViewer).addHotSpot(hotSpotConfig, sceneId)) {
+				selectedScene.set(sceneId);
+				selectedHotSpot.set(hotSpotConfig.id);
 				scenes.set(get(scenes));
+				return true;
 			} else {
-				throw new Error(`Failed to remove scene '${id}'.`);
+				throw new Error('Something went wrong. Please try again1');
 			}
+		} else {
+			throw new Error('Something went wrong. Please try again');
 		}
-		selectedScene.set(newSelectedScene);
-	}, 100);
+	}
 }
 
+// SCENES
 export function addScene(sceneId: string, sceneConfig: Scene) {
 	const isValidId = /^[a-zA-Z0-9_-]+$/.test(sceneId);
 	const isUniqueId = !get(scenes).hasOwnProperty(sceneId);
@@ -148,34 +157,31 @@ export function addScene(sceneId: string, sceneConfig: Scene) {
 	}
 }
 
-export function editHotSpot(
-	hotSpotConfig: HotSpot,
-	sceneId: string,
-	oldHotSpotConfig?: HotSpot,
-	oldSceneId?: string
-) {
-	oldSceneId = oldSceneId || sceneId;
-	oldHotSpotConfig = oldHotSpotConfig || hotSpotConfig;
-
-	const isValidId = /^[a-zA-Z0-9_-]+$/.test(hotSpotConfig.id);
-
-	hotSpotConfig.yaw = round(hotSpotConfig.yaw);
-	hotSpotConfig.pitch = round(hotSpotConfig.pitch);
-
-	if (!isValidId) {
-		throw new Error('ID must only contain letters, numbers, hyphens, and underscores.');
-	} else {
-		if (get(pannellumViewer).removeHotSpot(oldHotSpotConfig.id, oldSceneId)) {
-			if (get(pannellumViewer).addHotSpot(hotSpotConfig, sceneId)) {
-				selectedScene.set(sceneId);
-				selectedHotSpot.set(hotSpotConfig.id);
-				scenes.set(get(scenes));
-				return true;
-			} else {
-				throw new Error('Something went wrong. Please try again');
-			}
-		} else {
-			throw new Error('Something went wrong. Please try again');
-		}
+export function removeScene(id: string, skipChecks = false) {
+	let newSelectedScene = '';
+	if (id === get(selectedScene) || id === get(pannellumViewer).getScene()) {
+		newSelectedScene = Object.keys(get(scenes)).find((sceneId) => sceneId !== id) || '';
+		selectedScene.set(newSelectedScene);
+		get(pannellumViewer).loadScene(newSelectedScene);
 	}
+
+	if (!skipChecks && id === get(pannellumSetup).firstScene) {
+		initialConfig.update((value) => {
+			value.firstScene = get(selectedScene) || '';
+			return value;
+		});
+	}
+
+	const checkSceneInterval = setInterval(() => {
+		if (get(pannellumViewer).getScene() !== id) {
+			clearInterval(checkSceneInterval);
+
+			if (get(pannellumViewer).removeScene(id)) {
+				scenes.set(get(scenes));
+			} else {
+				throw new Error(`Failed to remove scene '${id}'.`);
+			}
+		}
+		selectedScene.set(newSelectedScene);
+	}, 100);
 }

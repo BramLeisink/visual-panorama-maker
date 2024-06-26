@@ -81,7 +81,7 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title>Export to Pannellum</Card.Title>
-		<Card.Description>Description</Card.Description>
+		<!-- <Card.Description>Description</Card.Description> -->
 	</Card.Header>
 	<Card.Content class="space-y-2">
 		<div class="flex items-center space-x-2">

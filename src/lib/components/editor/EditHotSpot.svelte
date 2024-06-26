@@ -18,7 +18,8 @@
 		pannellumSetup,
 		selectedScene,
 		scenes,
-		hotSpotTypes
+		hotSpotTypes,
+		pannellumViewer
 	} from '$lib/storedInfo';
 	import type { HotSpot } from '$lib/types';
 
@@ -56,11 +57,11 @@
 		try {
 			editHotSpot(
 				hotSpotSettings,
-				$selectedScene,
+				scene.value,
 				$scenes[$selectedScene].hotSpots[
 					$scenes[$selectedScene].hotSpots.findIndex((hotSpot) => hotSpot.id === $selectedHotSpot)
 				],
-				scene.value
+				$selectedScene
 			);
 			toast.success(`'${$selectedHotSpot}' succesfully saved.`);
 		} catch (error) {
@@ -125,7 +126,7 @@
 				<Card.Content class="space-y-2">
 					<div class="space-y-1">
 						<Label for="id">ID</Label>
-						<Input id="id" bind:value={hotSpotSettings.id} />
+						<Input disabled id="id" bind:value={hotSpotSettings.id} />
 					</div>
 					<div class="flex flex-row items-end justify-stretch gap-2">
 						<div class="flex-1 space-y-1">

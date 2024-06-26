@@ -14,9 +14,13 @@
 	import { removeScene } from '$lib/Pannellum';
 	import { toast } from 'svelte-sonner';
 
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { Button } from '$lib/components/ui/button/index';
 	import AddSceneDialog from '$lib/components/editor/AddSceneDialog.svelte';
 	import { Trash2, PackagePlus, Package, Variable, Badge } from 'lucide-svelte';
+	import EditScenes from './EditScene.svelte';
+	import TextTooltip from '../TextTooltip.svelte';
+	import { text } from '@sveltejs/kit';
 
 	function removeSceneFromPanorama(id: string) {
 		try {
@@ -61,10 +65,12 @@
 			{/each}
 		</div>
 		<div class="flex gap-2 pt-2">
-			<Button class="flex-1">Edit scene</Button>
-			<AddSceneDialog>
-				<Button variant="outline" size="icon"><PackagePlus class="h-4 w-4" /></Button>
-			</AddSceneDialog>
+			<Button class="w-full" disabled>Edit scene</Button>
+			<TextTooltip text="Add a Scene">
+				<AddSceneDialog>
+					<Button variant="outline" size="icon"><PackagePlus class="h-4 w-4" /></Button>
+				</AddSceneDialog>
+			</TextTooltip>
 		</div>
 	{:else}
 		<AddSceneDialog class="h-full w-full p-2">

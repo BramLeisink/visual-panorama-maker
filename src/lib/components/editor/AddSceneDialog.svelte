@@ -39,7 +39,7 @@
 	import Separator from '../ui/separator/separator.svelte';
 
 	let id = 'MyScene';
-	let name = '';
+	let title = '';
 
 	let dialogOpen = false;
 
@@ -49,7 +49,7 @@
 				throw new Error('No image selected');
 			}
 			let scene = {
-				title: name,
+				title: title,
 				type: 'equirectangular',
 				panorama: URL.createObjectURL(image),
 				hotSpots: []
@@ -90,8 +90,8 @@
 				<Input id="id" class="" bind:value={id} />
 			</div>
 			<div class="space-y-1">
-				<Label for="name" class="">Name</Label>
-				<Input id="name" class="" bind:value={name} />
+				<Label for="title" class="">title</Label>
+				<Input id="title" class="" bind:value={title} />
 			</div>
 			<!-- <div class="grid grid-cols-4 items-center gap-4">
 				<Label for="name" class="text-right">Image</Label>

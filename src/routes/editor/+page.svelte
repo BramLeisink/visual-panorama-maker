@@ -1,9 +1,25 @@
 <script context="module" lang="ts">
+	// Import necessary dependencies
+	import { onMount } from 'svelte';
+
+	// Define the current version and last modified date
 	const version: string = __VERSION__;
 	const lastMod = __LASTMOD__;
+
+	// Function to check and save version to local storage
+	function checkAndSaveVersion() {
+		const storedVersion = localStorage.getItem('appVersion');
+		if (storedVersion !== version) {
+			// Version has changed, update local storage and show dialog
+			localStorage.setItem('appVersion', version);
+			return true; // Indicate change for showing dialog
+		}
+		return false; // No change, no need to show dialog
+	}
 </script>
 
 <script lang="ts">
+	// Import necessary components and libraries
 	import EditHotSpot2 from '$lib/components/editor/EditHotSpot.svelte';
 	import HotSpotsList from '$lib/components/editor/HotSpotsList.svelte';
 	import PanoramaPreview2 from '$lib/components/editor/PanoramaPreview.svelte';
@@ -23,8 +39,7 @@
 	import WipAlert from '$lib/components/WipAlert.svelte';
 	import Header from '$lib/components/editor/Header.svelte';
 
-	let latestGitTag: string = 'v0.2.3';
-
+	// Define types for panorama and scene data
 	type PanoramaData = {
 		yaw: number;
 		pitch: number;
@@ -33,16 +48,22 @@
 	type SceneData = {
 		imageSrc: string;
 	};
+
+	// Initialize variables for panorama and scene data
 	let panoramaData: PanoramaData = { yaw: 0, pitch: 0 };
 	let sceneData: SceneData[] = [];
+
+	// Function to handle updates to panorama data
 	function handlePanoramaDataUpdate(event: CustomEvent<PanoramaData>) {
 		panoramaData = event.detail;
 	}
 
+	// Function to handle updates to scene data
 	function handleScenes(event: CustomEvent<SceneData>) {
 		sceneData = [...sceneData, event.detail];
 	}
 
+	// Function to handle resizing
 	function handleResize(newSize: number, prevSize: number | undefined) {
 		if ($pannellumViewer || !$pannellumViewer.getScene() || Object.keys($scenes).length == 0) {
 			$pannellumViewer.resize();
@@ -50,9 +71,20 @@
 			console.warn('pannellumViewer is not initialized or does not have a resize function.');
 		}
 	}
+
+	// Initialize local state for dialog visibility
+	let showDialog = false;
+
+	// On component mount, check and save version to local storage
+	onMount(() => {
+		showDialog = checkAndSaveVersion();
+	});
 </script>
 
-<WipAlert dialogOpen={true} {version} {lastMod}></WipAlert>
+<!-- Display the WipAlert dialog based on showDialog state -->
+<WipAlert dialogOpen={showDialog} {version} {lastMod}></WipAlert>
+
+<!-- HTML structure with resizable panes and components -->
 <div class="h-[2.5rem]">
 	<Header />
 </div>
