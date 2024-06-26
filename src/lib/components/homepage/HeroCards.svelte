@@ -6,7 +6,7 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import MultipleScenes from './features/MultipleScenes.svelte';
 
-	import panoramaImage from '$lib/assets/panorama-1.png';
+	import panoramaImage from '$lib/assets/equirectangular.webp';
 </script>
 
 <div class="relative hidden h-[500px] w-[700px] flex-row flex-wrap gap-8 lg:flex">
@@ -89,7 +89,7 @@
 	</div>
 
 	<Card.Root
-		class="absolute -right-[10px] bottom-[35px] h-[170px] w-[350px] shadow-black/10 drop-shadow-xl dark:shadow-white/10 p-4"
+		class="absolute -right-[10px] bottom-[35px] h-[170px] w-[350px] p-4 shadow-black/10 drop-shadow-xl dark:shadow-white/10"
 	>
 		<Button
 			variant="empty"
