@@ -4,12 +4,17 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	export let dialogOpen = false;
+	export let version = '';
+	export let lastMod = '';
 </script>
 
 <AlertDialog.Root open={dialogOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Beta Version</AlertDialog.Title>
+			<AlertDialog.Title
+				>Beta Version <span class="text-sm text-primary">({version})</span
+				></AlertDialog.Title
+			>
 			<AlertDialog.Description>
 				This application is currently in beta, so there may be some bugs. Your feedback helps
 				improve it! If you encounter any issues, please consider <a

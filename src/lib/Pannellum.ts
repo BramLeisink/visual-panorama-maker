@@ -12,7 +12,8 @@ import {
 	initialConfig
 } from '$lib/storedInfo';
 
-function round(value: number): number {
+export function round(value: number): number {
+	value = Number(value);
 	return parseFloat(value.toFixed(Number(get(viewerSettings).precision)));
 }
 
@@ -44,6 +45,9 @@ selectedScene.subscribe((sceneId) => {
 		get(viewerSettings).lookAtSelected
 	) {
 		get(pannellumViewer).loadScene(sceneId);
+		if (get(scenes)[get(selectedScene)].hotSpots.length > 0) {
+			selectedHotSpot.set(get(scenes)[get(selectedScene)].hotSpots[0].id);
+		}
 	}
 });
 

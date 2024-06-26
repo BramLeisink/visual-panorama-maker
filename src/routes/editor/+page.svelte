@@ -1,10 +1,15 @@
+<script context="module" lang="ts">
+	const version: string = __VERSION__;
+	const lastMod = __LASTMOD__;
+</script>
+
 <script lang="ts">
 	import EditHotSpot2 from '$lib/components/editor/EditHotSpot.svelte';
 	import HotSpotsList from '$lib/components/editor/HotSpotsList.svelte';
 	import PanoramaPreview2 from '$lib/components/editor/PanoramaPreview.svelte';
 	import SceneSelector from '$lib/components/editor/SceneSelector.svelte';
 	import SceneList from '$lib/components/editor/SceneList.svelte';
-	import StatisticsAndExport from '$lib/components/editor/StatisticsAndExport.svelte';
+	import StatisticsAndExport from '$lib/components/editor/Export.svelte';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 
@@ -12,10 +17,13 @@
 		pannellumSetup,
 		pannellumViewer,
 		selectedHotSpot,
-		viewerSettings
+		viewerSettings,
+		scenes
 	} from '$lib/storedInfo';
 	import WipAlert from '$lib/components/WipAlert.svelte';
 	import Header from '$lib/components/editor/Header.svelte';
+
+	let latestGitTag: string = 'v0.2.3';
 
 	type PanoramaData = {
 		yaw: number;
@@ -36,7 +44,7 @@
 	}
 
 	function handleResize(newSize: number, prevSize: number | undefined) {
-		if ($pannellumViewer && typeof $pannellumViewer.resize === 'function') {
+		if ($pannellumViewer || !$pannellumViewer.getScene() || Object.keys($scenes).length == 0) {
 			$pannellumViewer.resize();
 		} else {
 			console.warn('pannellumViewer is not initialized or does not have a resize function.');
@@ -44,7 +52,7 @@
 	}
 </script>
 
-<WipAlert dialogOpen={true}></WipAlert>
+<WipAlert dialogOpen={true} {version} {lastMod}></WipAlert>
 <div class="h-[2.5rem]">
 	<Header />
 </div>

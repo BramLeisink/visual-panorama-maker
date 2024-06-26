@@ -26,6 +26,8 @@
 		Orbit
 	} from 'lucide-svelte';
 
+	import { round } from '$lib/Pannellum';
+
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
 
@@ -36,6 +38,14 @@
 			$pannellumViewer.destroy();
 		}
 		$pannellumViewer = window.pannellum.viewer('panorama', $pannellumSetup);
+
+		panoElement.addEventListener('click', (event: any) => {
+			const [clickPitch, clickYaw] = $pannellumViewer.mouseEventToCoords(event);
+			$clickedLocation = {
+				yaw: round(clickYaw),
+				pitch: round(clickPitch)
+			};
+		});
 	}
 
 	onMount(() => {
@@ -57,9 +67,8 @@
 		// 	}
 		// });
 
-		// Unsubscribe when the component is destroyed
+		// Clean up on component destroy
 		return () => {
-			// subscribePannellumSetup();
 			if ($pannellumViewer) {
 				$pannellumViewer.destroy();
 			}
