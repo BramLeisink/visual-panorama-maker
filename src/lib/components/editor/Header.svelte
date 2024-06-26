@@ -10,10 +10,15 @@
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { Github } from 'lucide-svelte';
+	import OrganizeHotSpots from './OrganizeHotSpots/Dialog.svelte';
+	// import OrganizeHotSpots from '../../../routes/OrganizeHotSpots/OrganizeHotSpots.svelte';
 
 	let mode: string | undefined;
+
+	let organizeHotSpotsDialogOpen = false;
 </script>
 
+<OrganizeHotSpots bind:dialogOpen={organizeHotSpotsDialogOpen} />
 <Menubar.Root class="flex w-full flex-row rounded-none border-0 border-b">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
@@ -32,6 +37,10 @@
 			<Menubar.Item disabled>
 				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
 			</Menubar.Item>
+			<Menubar.Separator />
+			<Menubar.Item on:click={() => (organizeHotSpotsDialogOpen = true)}
+				>Organize HotSpots</Menubar.Item
+			>
 			<Menubar.Separator />
 			<Menubar.Sub>
 				<Menubar.SubTrigger>Precision</Menubar.SubTrigger>
