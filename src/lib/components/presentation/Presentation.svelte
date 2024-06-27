@@ -49,6 +49,7 @@
 		src={panoramaImage}
 	/>
 </Slide>
+<Slide iframe="https://visual-panorama-maker.vercel.app/editor"></Slide>
 <Slide>
 	<HowItWorks />
 </Slide>
