@@ -10,6 +10,10 @@
 	import PanoramaPreview from '../editor/PanoramaPreview.svelte';
 
 	import panoramaImage from '$lib/assets/equirectangular.webp';
+	import idee1 from '$lib/assets/004d8556-715f-4f3f-9c03-734e874b2136.jpeg'
+	import idee2 from '$lib/assets/3bbb5a11-8db1-4adc-ba81-b93cf024f99b.jpeg'
+	import idee3 from '$lib/assets/b5bd6396-00c6-4fc5-b16f-84f9c2b0031b.jpeg'
+	import idee4 from '$lib/assets/c975d98b-961f-49ee-be24-2d4179b34d98.jpeg'
 </script>
 
 <Slide><FirstSlide /></Slide>
@@ -39,15 +43,57 @@
 	</ul>
 </Slide>
 <Slide><p class="text-5xl font-bold">Onze spelideeën uitgelegd</p></Slide>
+<Slide
+	><p class="text-5xl font-bold">Basismodule (metriek)</p>
+	<div class="flex items-center justify-center">
+		<img
+			alt="Panorama"
+			class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+			src={idee3}
+		/>
+	</div>
+</Slide>
+<Slide
+	><p class="text-5xl font-bold">Elektrische energie</p>
+	<div class="flex items-center justify-center">
+		<img
+			alt="Panorama"
+			class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+			src={idee2}
+		/>
+	</div>
+</Slide>
+<Slide
+	><p class="text-5xl font-bold">Thermische energie</p>
+	<div class="flex items-center justify-center">
+		<img
+			alt="Panorama"
+			class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+			src={idee1}
+		/>
+	</div>
+</Slide>
+<Slide
+	><p class="text-5xl font-bold">Chemische energie</p>
+	<div class="flex items-center justify-center">
+		<img
+			alt="Panorama"
+			class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+			src={idee4}
+		/>
+	</div>
+</Slide>
 <Slide><p class="text-5xl font-bold">Waarom onze spelideeën effectief zijn</p></Slide>
 <Slide><Home /></Slide>
 <Slide
 	><p class="text-5xl font-bold">Equirectangular panorama</p>
-	<img
-		alt="Panorama"
-		class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
-		src={panoramaImage}
-	/>
+	<div class="flex items-center justify-center">
+		<img
+			alt="Panorama"
+			class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+			src={panoramaImage}
+		/>
+	</div>
 </Slide>
 <Slide iframe="https://visual-panorama-maker.vercel.app/editor"></Slide>
 <Slide>

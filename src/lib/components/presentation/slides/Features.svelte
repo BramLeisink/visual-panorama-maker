@@ -47,7 +47,7 @@
 	];
 </script>
 
-<Slide animate>
+<Slide animate interactieve={true}>
 	<p class="text-5xl font-bold">
 		Veel{' '}
 		<span class="bg-gradient-to-b from-primary/60 to-primary bg-clip-text text-transparent">
