@@ -8,6 +8,8 @@
 	import FirstSlide from './slides/FirstSlide.svelte';
 	import Button from '../ui/button/button.svelte';
 	import PanoramaPreview from '../editor/PanoramaPreview.svelte';
+
+	import panoramaImage from '$lib/assets/equirectangular.webp';
 </script>
 
 <Slide><FirstSlide /></Slide>
@@ -39,6 +41,14 @@
 <Slide><p class="text-5xl font-bold">Onze spelideeën uitgelegd</p></Slide>
 <Slide><p class="text-5xl font-bold">Waarom onze spelideeën effectief zijn</p></Slide>
 <Slide><Home /></Slide>
+<Slide
+	><p class="text-5xl font-bold">Equirectangular panorama</p>
+	<img
+		alt="Panorama"
+		class="h-full rounded-xl border object-cover shadow-black/10 drop-shadow-xl dark:shadow-white/10"
+		src={panoramaImage}
+	/>
+</Slide>
 <Slide>
 	<HowItWorks />
 </Slide>
