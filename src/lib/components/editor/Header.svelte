@@ -11,18 +11,29 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { Github } from 'lucide-svelte';
 	import OrganizeHotSpots from './OrganizeHotSpots/Dialog.svelte';
+	import Import from './Import.svelte';
+	import { Item } from '../ui/accordion';
+	import WipAlert from '../WipAlert.svelte';
 	// import OrganizeHotSpots from '../../../routes/OrganizeHotSpots/OrganizeHotSpots.svelte';
 
 	let mode: string | undefined;
 
 	let organizeHotSpotsDialogOpen = false;
+	let importDialogOpen = false;
+	let wipDialogOpen = false;
 </script>
 
 <OrganizeHotSpots bind:dialogOpen={organizeHotSpotsDialogOpen} />
+<Import bind:dialogOpen={importDialogOpen} class="hidden" />
+<WipAlert bind:dialogOpen={wipDialogOpen} />
+
 <Menubar.Root class="flex w-full flex-row rounded-none border-0 border-b">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
+			<Menubar.Item on:click={() => (importDialogOpen = true)}>Import</Menubar.Item>
+			<Menubar.Separator />
+			<Menubar.Item on:click={() => (wipDialogOpen = true)}>About</Menubar.Item>
 			<Menubar.Item href="https://github.com/BramLeisink/visual-panorama-maker"
 				><Github class="mr-2 h-4 w-4" /> Github</Menubar.Item
 			>
