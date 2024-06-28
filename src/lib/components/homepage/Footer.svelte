@@ -75,7 +75,7 @@
 
 	<section class="container pb-14 text-center">
 		<p>
-			&copy; 2024 Landing page made by{' '}
+			Landing page made by{' '}
 			<a
 				rel="noreferrer noopener"
 				target="_blank"
@@ -93,7 +93,7 @@
 			</a>
 		</p>
 		<p class="text-muted-foreground">
-			Based on shadcn-landing-page by{' '}<a
+			Landing page inspired by shadcn-landing-page by{' '}<a
 				rel="noreferrer noopener"
 				target="_blank"
 				href="https://github.com/leoMirandaa"

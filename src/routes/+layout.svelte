@@ -9,7 +9,13 @@
 
 	onMount(() => {
 		const report_error = (msg: string = 'unknown error') => {
-			toast.error(msg, { action: { label: 'report', onClick: () => console.log('Undo') } });
+			toast.error(msg, {
+				action: {
+					label: 'report',
+					onClick: () =>
+						window.open('https://github.com/BramLeisink/visual-panorama-maker/issues', '_blank')
+				}
+			});
 		};
 
 		const handle_rejection = (e: PromiseRejectionEvent) => {
@@ -36,5 +42,6 @@
 
 <Toaster richColors theme={$mode} />
 <ModeWatcher />
-
-<slot />
+<div class="min-h-screen">
+	<slot />
+</div>

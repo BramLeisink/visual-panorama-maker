@@ -18,9 +18,6 @@
 			{' '}
 			<h2 class="inline">
 				<p
-					rel="noreferrer noopener"
-					target="_blank"
-					href="https://github.com/mpetroff/pannellum"
 					class="inline border-[#61DAFB] bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] bg-clip-text text-primary text-transparent transition-all hover:border-b-2"
 				>
 					Norte

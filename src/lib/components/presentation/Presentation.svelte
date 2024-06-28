@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Hero from '../homepage/Hero.svelte';
-	import MultipleScenes from '../homepage/features/MultipleScenes.svelte';
 	import Slide from './Slide.svelte';
 	import Home from './slides/Home.svelte';
 	import Features from './slides/Features.svelte';

@@ -3,6 +3,7 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
 	darkMode: ['class'],
+	plugins: [require('@tailwindcss/typography')],
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	safelist: [
 		// Visibility, z-index, and cursor

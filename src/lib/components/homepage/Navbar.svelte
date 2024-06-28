@@ -11,13 +11,13 @@
 	];
 </script>
 
-<header
-	class="sticky top-0 z-40 w-full border-b-[1px] bg-white dark:border-b-slate-700 dark:bg-background"
->
+<header class="sticky top-0 z-40 w-full border-b-[1px] bg-white dark:bg-background">
 	<div class="container hidden items-center justify-between p-2 md:flex">
-		<h2 class="flex h-full flex-row items-center text-xl font-bold">
-			<Orbit class="mr-2 h-6 w-6 text-primary" />Visual Panorama Maker
-		</h2>
+		<a href="/">
+			<h2 class="flex h-full flex-row items-center text-xl font-bold">
+				<Orbit class="mr-2 h-6 w-6 text-primary" />Visual Panorama Maker
+			</h2>
+		</a>
 		<div class="flex flex-row gap-2">
 			{#each links as link}
 				<Button href={link.href} variant="ghost">{link.name}</Button>
