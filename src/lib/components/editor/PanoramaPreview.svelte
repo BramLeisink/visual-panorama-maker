@@ -31,8 +31,8 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
 
-
 	let panoElement: any;
+	let currentScene: string = '';
 
 	function initPanorama() {
 		if ($pannellumViewer) {
@@ -46,6 +46,8 @@
 				yaw: round(clickYaw),
 				pitch: round(clickPitch)
 			};
+			if ($viewerSettings.lookAtSelected && $viewerSettings.developmentMode)
+				$selectedScene = $pannellumViewer.getScene() || $selectedScene;
 		});
 	}
 
@@ -59,14 +61,6 @@
 			script.onload = () => initPanorama();
 			document.head.appendChild(script);
 		}
-
-		// const subscribePannellumSetup = pannellumSetup.subscribe((pannellumSetup) => {
-		// 	if ($pannellumViewer) {
-		// 		if ($pannellumViewer)
-		// 		$pannellumViewer.destroy();
-		// 		initPanorama();
-		// 	}
-		// });
 
 		// Clean up on component destroy
 		return () => {
@@ -142,16 +136,7 @@
 		)}
 	>
 		<div bind:this={panoElement} id="panorama" />
-		<!-- {#if $pannellumViewer} -->
 		<div id="controls" class="z-2 absolute flex flex-col gap-1 p-2">
-			<!-- <Button variant="outline" size="icon" on:click={panLeft}><ChevronLeft class="h-4 w-4" /></Button
-		>
-		<Button variant="outline" size="icon" on:click={panRight}
-			><ChevronRight class="h-4 w-4" /></Button
-		>
-		<Button variant="outline" size="icon" on:click={panUp}><ChevronUp class="h-4 w-4" /></Button>
-		<Button variant="outline" size="icon" on:click={panDown}><ChevronDown class="h-4 w-4" /></Button
-		> -->
 			<div class="flex flex-col">
 				<Button variant="outline" size="icon" class="rounded-b-none" on:click={zoomIn}
 					><ZoomIn class="h-4 w-4" /></Button

@@ -43,7 +43,8 @@ selectedScene.subscribe((sceneId) => {
 		sceneId &&
 		get(pannellumViewer) &&
 		get(viewerSettings).developmentMode &&
-		get(viewerSettings).lookAtSelected
+		get(viewerSettings).lookAtSelected &&
+		sceneId != get(pannellumViewer).getScene()
 	) {
 		get(pannellumViewer).loadScene(sceneId);
 		if (get(scenes)[get(selectedScene)].hotSpots.length > 0) {
@@ -191,4 +192,20 @@ export function removeScene(id: string, skipChecks = false) {
 		selectedScene.set(newSelectedScene);
 	}, 100);
 	return false;
+}
+
+export function editScene(sceneId: string, sceneConfig: Scene) {
+	const isValidId = /^[a-zA-Z0-9_-]+$/.test(sceneId);
+	if (!isValidId) {
+		Warn('ID must only contain letters, numbers, hyphens, and underscores.');
+		return false;
+	} else {
+		if (get(pannellumViewer).addScene(sceneId, sceneConfig)) {
+			scenes.set(get(scenes));
+			selectedScene.set(sceneId);
+			return true;
+		} else {
+			throw new Error(`Failed to add scene '${sceneId}'.`);
+		}
+	}
 }

@@ -18,10 +18,11 @@
 	import { Button } from '$lib/components/ui/button/index';
 	import AddSceneDialog from '$lib/components/editor/AddSceneDialog.svelte';
 	import { Trash2, PackagePlus, Package, Variable, Badge, Delete } from 'lucide-svelte';
-	import EditScenes from './EditScene.svelte';
+	import EditScenes from './EditSceneSheet.svelte';
 	import TextTooltip from '../TextTooltip.svelte';
 	import { text } from '@sveltejs/kit';
 	import DeleteScene from './DeleteScene.svelte';
+	import EditScene from './EditSceneSheet.svelte';
 </script>
 
 <div class="flex-spread flex h-full w-full flex-col justify-between p-1">
@@ -52,7 +53,9 @@
 			{/each}
 		</div>
 		<div class="flex gap-2 pt-2">
-			<Button class="w-full" disabled>Edit scene</Button>
+			<EditScene class="w-full">
+				<Button class="w-full">Edit scene</Button>
+			</EditScene>
 			<TextTooltip text="Add a Scene">
 				<AddSceneDialog>
 					<Button variant="outline" size="icon"><PackagePlus class="h-4 w-4" /></Button>

@@ -53,3 +53,16 @@ export function isPannellumSetup(data: any): data is PannellumSetup {
 	}
 	return true;
 }
+
+// Documentation
+export type Categories = 'sveltekit' | 'svelte';
+
+export type Post = {
+	title: string;
+	slug: string;
+	description: string;
+	folder: string;
+	index: number;
+	categories: Categories[];
+	published: boolean;
+};

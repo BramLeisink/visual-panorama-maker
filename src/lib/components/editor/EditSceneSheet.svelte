@@ -1,5 +1,6 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import { onMount } from 'svelte';
+	import { writable, derived, get } from 'svelte/store';
 
 	import {
 		hotSpotsList,
@@ -7,7 +8,8 @@
 		selectedHotSpot,
 		scenes,
 		selectedScene,
-		pannellumViewer
+		pannellumViewer,
+		initialConfig
 	} from '$lib/storedInfo';
 
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -22,7 +24,8 @@
 	import { toast } from 'svelte-sonner';
 
 	import Dropzone from 'svelte-file-dropzone';
-	import { ImageUp } from 'lucide-svelte';
+	import { Badge, ImageUp } from 'lucide-svelte';
+	import { Warn } from '$lib/utils';
 
 	let image: any;
 	let sceneSettings: Scene;
@@ -37,8 +40,9 @@
 
 	onMount(() => {
 		selectedScene.subscribe(async (value) => {
-			sceneSettings = $scenes[value];
+			sceneSettings = { ...get(scenes)[value] };
 			selectedSceneId = value;
+			image = '';
 			if (sceneSettings.panorama) {
 				imageSize = await getImageSize(sceneSettings.panorama);
 			}
@@ -59,23 +63,24 @@
 		return parseFloat((size / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 	}
 
+	function makeFirstScene() {
+		$initialConfig.firstScene = $selectedScene;
+	}
+
 	function saveSceneChanges() {
-		try {
-			if (!sceneSettings.panorama && !image) {
-				throw new Error('No image selected');
-			}
-			editScene(selectedSceneId, sceneSettings);
-			sheetOpen = false;
-			toast.success(`'${selectedSceneId}' succesfully modified.`);
-			selectedScene.set(selectedSceneId);
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(error);
-				toast.error(error.message);
-			} else {
-				toast.error('An unknown error occurred.');
-			}
+		if (!sceneSettings.panorama && !image) {
+			Warn('No image selected');
+			return false;
 		}
+
+		if (image) {
+			sceneSettings.panorama = URL.createObjectURL(image);
+		}
+
+		editScene(selectedSceneId, sceneSettings);
+		sheetOpen = false;
+		toast.success(`'${selectedSceneId}' succesfully modified.`);
+		selectedScene.set(selectedSceneId);
 	}
 
 	let sheetOpen = false;
@@ -173,9 +178,10 @@
 			</div>
 		</div>
 		<Sheet.Footer>
-			<Sheet.Close>
-				<Button on:click={saveSceneChanges}>Save changes</Button>
-			</Sheet.Close>
+			<Button variant="outline" on:click={makeFirstScene}
+				>Make first Scene <Badge class="ml-2 h-4 w-4 fill-primary stroke-none" /></Button
+			>
+			<Button on:click={saveSceneChanges}>Save changes</Button>
 		</Sheet.Footer>
 	</Sheet.Content>
-</Sheet.Root> -->
+</Sheet.Root>

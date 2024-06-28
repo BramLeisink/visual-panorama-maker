@@ -14,7 +14,6 @@
 	import Import from './Import.svelte';
 	import { Item } from '../ui/accordion';
 	import WipAlert from '../WipAlert.svelte';
-	// import OrganizeHotSpots from '../../../routes/OrganizeHotSpots/OrganizeHotSpots.svelte';
 
 	let mode: string | undefined;
 

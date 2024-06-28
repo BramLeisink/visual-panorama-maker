@@ -73,10 +73,11 @@
 
 	onMount(() => {
 		selectedHotSpot.subscribe((value) => {
-			hotSpotSettings =
-				$scenes[$selectedScene].hotSpots[
+			hotSpotSettings = {
+				...$scenes[$selectedScene].hotSpots[
 					$scenes[$selectedScene].hotSpots.findIndex((hotSpot) => hotSpot.id === $selectedHotSpot)
-				];
+				]
+			};
 		});
 
 		clickedLocation.subscribe((value) => {
@@ -205,8 +206,8 @@
 					<Card.Description>Change the interactivity with the HotSpot here.</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					<div class="space-y-1">
-						<Label for="type">Hotspot Type</Label>
+					<div class="space-y-4">
+						<Label for="type" class="font-bold">Hotspot Type</Label>
 
 						<Select.Root
 							selected={{
@@ -236,63 +237,68 @@
 								>
 							</Select.Content>
 						</Select.Root>
-						<Separator class="m-2" />
-						{#if hotSpotSettings.type == 'info'}
-							<div class="space-y-1">
-								<Label for="url">URL</Label>
-								<Input id="url" bind:value={hotSpotSettings.URL} />
-							</div>
-						{:else if hotSpotSettings.type == 'scene'}
-							<Label for="targetScene">Target Scene</Label>
+						<div class="space-y-1 rounded-lg border p-2">
+							{#if hotSpotSettings.type == 'info'}
+								<div class="space-y-1">
+									<Label for="url">URL</Label>
+									<Input id="url" bind:value={hotSpotSettings.URL} />
+								</div>
+							{:else if hotSpotSettings.type == 'scene'}
+								<Label for="targetScene">Target Scene</Label>
 
-							<Select.Root
-								selected={{
-									value: hotSpotSettings.sceneId || $selectedScene,
-									label:
-										$scenes[hotSpotSettings.sceneId || $selectedScene]?.title ||
-										hotSpotSettings.sceneId ||
-										$selectedScene
-								}}
-								onSelectedChange={(s) => {
-									s && (hotSpotSettings.sceneId = s.value);
-									console.log(s);
-								}}
-							>
-								<Select.Trigger class="w-full">
-									<Select.Value placeholder="Select a scene" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Group>
-										<Select.Label>Scenes</Select.Label>
-										{#each Object.entries($scenes) as [key, scene]}
-											<Select.Item value={key} label={scene.title || key}
-												>{scene.title || key}</Select.Item
-											>
-										{/each}
-									</Select.Group>
+								<Select.Root
+									selected={{
+										value: hotSpotSettings.sceneId || $selectedScene,
+										label:
+											$scenes[hotSpotSettings.sceneId || $selectedScene]?.title ||
+											hotSpotSettings.sceneId ||
+											$selectedScene
+									}}
+									onSelectedChange={(s) => {
+										s && (hotSpotSettings.sceneId = s.value);
+										console.log(s);
+									}}
+								>
+									<Select.Trigger class="w-full">
+										<Select.Value placeholder="Select a scene" />
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											<Select.Label>Scenes</Select.Label>
+											{#each Object.entries($scenes) as [key, scene]}
+												<Select.Item value={key} label={scene.title || key}
+													>{scene.title || key}</Select.Item
+												>
+											{/each}
+										</Select.Group>
 
-									<AddSceneDialog class="w-full"
-										><Button variant="outline" class="mt-2 w-full"
-											><PackagePlus class="mr-2 h-4 w-4" /> Add Scene</Button
-										></AddSceneDialog
-									>
-								</Select.Content>
-							</Select.Root>
-							<div class="flex flex-row items-end justify-stretch gap-2">
-								<div class="flex-1 space-y-1">
-									<Label for="targetYaw">Target Yaw</Label>
-									<Input id="targetYaw" bind:value={hotSpotSettings.targetYaw} type="number" />
+										<AddSceneDialog class="w-full"
+											><Button variant="outline" class="mt-2 w-full"
+												><PackagePlus class="mr-2 h-4 w-4" /> Add Scene</Button
+											></AddSceneDialog
+										>
+									</Select.Content>
+								</Select.Root>
+								<div class="flex flex-row items-end justify-stretch gap-2">
+									<div class="flex-1 space-y-1">
+										<Label for="targetYaw">Target Yaw</Label>
+										<Input id="targetYaw" bind:value={hotSpotSettings.targetYaw} type="number" />
+									</div>
+									<div class="flex-1 space-y-1">
+										<Label for="targetPitch">Target Pitch</Label>
+										<Input
+											id="targetPitch"
+											bind:value={hotSpotSettings.targetPitch}
+											type="number"
+										/>
+									</div>
+									<div class="flex-1 space-y-1">
+										<Label for="targetHfov">Target Hfov</Label>
+										<Input id="targetHfov" bind:value={hotSpotSettings.targetHfov} type="number" />
+									</div>
 								</div>
-								<div class="flex-1 space-y-1">
-									<Label for="targetPitch">Target Pitch</Label>
-									<Input id="targetPitch" bind:value={hotSpotSettings.targetPitch} type="number" />
-								</div>
-								<div class="flex-1 space-y-1">
-									<Label for="targetHfov">Target Hfov</Label>
-									<Input id="targetHfov" bind:value={hotSpotSettings.targetHfov} type="number" />
-								</div>
-							</div>
-						{/if}
+							{/if}
+						</div>
 					</div>
 				</Card.Content>
 				<Card.Footer>

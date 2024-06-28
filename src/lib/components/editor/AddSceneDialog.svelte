@@ -29,7 +29,7 @@
 	import { Input } from '$lib/components/ui/input/index';
 	import { Label } from '$lib/components/ui/label/index';
 
-	import { cn } from '$lib/utils.js';
+	import { cn, Warn } from '$lib/utils.js';
 
 	let className = '';
 	export { className as class };
@@ -45,7 +45,8 @@
 
 	function addSceneToPanorama() {
 		if (!image) {
-			throw new Error('No image selected');
+			Warn('No image selected');
+			return false;
 		}
 		let scene = {
 			title: title,

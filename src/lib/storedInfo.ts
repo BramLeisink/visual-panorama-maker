@@ -19,7 +19,7 @@ export const viewerSettings = writable({
 	developmentMode: true
 });
 
-export const clickedLocation = writable<{yaw: number, pitch: number}>();
+export const clickedLocation = writable<{ yaw: number; pitch: number }>();
 export const initialConfig = writable<PannellumSettings>({
 	firstScene: 'circle',
 	autoLoad: true,
@@ -83,7 +83,7 @@ export const hotSpotsInSelectedScene = derived(
 );
 
 export const hotSpotTypes: { [key: string]: string } = {
-    scene: 'Scene',
-    info: 'Info',
-    custom: 'Custom'
+	scene: 'Scene',
+	info: 'Info',
+	// custom: 'Custom'
 };
