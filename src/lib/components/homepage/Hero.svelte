@@ -34,7 +34,7 @@
 		</p>
 
 		<div class="space-y-4 md:space-x-4 md:space-y-0">
-			<Button class="w-full md:w-1/3" href="/editor">View Demo</Button>
+			<Button class="w-full md:w-1/3" data-sveltekit-reload href="/editor">View Demo</Button>
 			<Button
 				rel="noreferrer noopener"
 				href="https://github.com/BramLeisink/visual-panorama-maker"
